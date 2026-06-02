@@ -441,8 +441,18 @@ export default function BetSage() {
           const data = await res.json();
           return data.map(g => ({ ...g, sport_title: s.split("_")[1]?.toUpperCase() }));
         })
-      );
-      setGames(results.flat().slice(0, 20));
+      const allGames = results.flat();
+const highConf = allGames.filter(g => {
+  const bm = g.bookmakers?.[0];
+  const h2h = bm?.markets?.find(m => m.key === "h2h");
+  if (!h2h) return false;
+  const prices = h2h.outcomes?.map(o => o.price) || [];
+  const fav = Math.min(...prices);
+  const dec = fav < 0 ? ((-100 / fav) + 1) : ((fav / 100) + 1);
+  const conf = Math.round((1 / dec) * 100);
+  return conf >= 80;
+});
+setGames(highConf.length > 0 ? highConf : allGames.slice(0, 10));
     } catch (e) {
       setError("Failed to load odds — check API key");
     }
