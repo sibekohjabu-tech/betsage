@@ -39,7 +39,39 @@ const SPORTS = [
   {
     id: "soccer", label: "Football", icon: "⚽", color: C.aqua,
     betTypes: ["Match Winner", "Over/Under Goals", "Both Teams Score", "1st Half Result", "Asian Handicap", "Clean Sheet"],
-    keys: ["soccer_epl","soccer_spain_la_liga","soccer_germany_bundesliga","soccer_italy_serie_a","soccer_france_ligue_one","soccer_usa_mls","soccer_brazil_campeonato","soccer_argentina_primera_division","soccer_conmebol_copa_libertadores","soccer_conmebol_copa_sudamericana","soccer_netherlands_eredivisie","soccer_portugal_primeira_liga","soccer_turkey_super_league","soccer_sweden_allsvenskan","soccer_norway_eliteserien","soccer_denmark_superliga","soccer_australia_aleague","soccer_mexico_ligamx","soccer_colombia_primera_a","soccer_england_league1","soccer_england_league2","soccer_spain_segunda_division","soccer_germany_bundesliga2"],
+    keys: [
+      // Top European leagues
+      "soccer_epl","soccer_spain_la_liga","soccer_germany_bundesliga","soccer_italy_serie_a",
+      "soccer_france_ligue_one","soccer_netherlands_eredivisie","soccer_portugal_primeira_liga",
+      "soccer_turkey_super_league","soccer_england_league1","soccer_england_league2",
+      "soccer_spain_segunda_division","soccer_germany_bundesliga2","soccer_italy_serie_b",
+      "soccer_france_ligue_two","soccer_belgium_first_div","soccer_scotland_premiership",
+      "soccer_greece_super_league","soccer_poland_ekstraklasa","soccer_czech_liga",
+      "soccer_austria_bundesliga","soccer_switzerland_superleague","soccer_denmark_superliga",
+      "soccer_sweden_allsvenskan","soccer_norway_eliteserien","soccer_finland_veikkausliiga",
+      "soccer_russia_premier_league","soccer_ukraine_premier_league","soccer_romania_liga_1",
+      "soccer_serbia_superliga","soccer_croatia_hnl","soccer_slovakia_superliga",
+      "soccer_hungary_liga","soccer_bulgaria_primera_liga",
+      // Africa & Middle East
+      "soccer_south_africa_premiership","soccer_morocco_botola_pro","soccer_egypt_premier_league",
+      "soccer_nigeria_professional_league","soccer_kenya_premier_league",
+      "soccer_ghana_premier_league","soccer_tunisia_ligue_pro","soccer_algeria_professional_league",
+      "soccer_israel_premier_league","soccer_saudi_arabia_pro_league","soccer_uae_pro_league",
+      // Americas
+      "soccer_usa_mls","soccer_usa_usl_championship","soccer_usa_usl_leaguetwo",
+      "soccer_brazil_campeonato","soccer_argentina_primera_division","soccer_argentina_reservas",
+      "soccer_mexico_ligamx","soccer_colombia_primera_a","soccer_chile_primera_division",
+      "soccer_peru_primera_division","soccer_ecuador_primera_a","soccer_venezuela_primera_liga",
+      "soccer_conmebol_copa_libertadores","soccer_conmebol_copa_sudamericana",
+      "soccer_concacaf_champions_cup",
+      // Asia & Oceania
+      "soccer_japan_j_league","soccer_south_korea_kleague1","soccer_china_super_league",
+      "soccer_australia_aleague","soccer_india_super_league",
+      // International
+      "soccer_uefa_european_championship","soccer_uefa_nations_league",
+      "soccer_conmebol_copa_america","soccer_world_cup","soccer_fifa_world_cup_qualifiers_conmebol",
+      "soccer_uefa_champs_league","soccer_uefa_europa_league","soccer_uefa_europa_conference_league",
+    ],
   },
   {
     id: "mlb", label: "Baseball", icon: "⚾", color: C.gold,
@@ -323,24 +355,38 @@ function SportLandingPage({ sport, onBack, selectedBets, onToggleBet }) {
       if (!ODDS_API_KEY) { setError("Add VITE_ODDS_API_KEY to Vercel"); setLoading(false); return; }
       setLoading(true);
       try {
-        const results = await Promise.allSettled(
-          sport.keys.map(async (key) => {
-            const markets = sport.id === "soccer"
-              ? "h2h,spreads,totals,btts,h2h_h1,totals_h1"
-              : sport.id === "tennis"
-              ? "h2h,spreads,totals"
-              : "h2h,spreads,totals,h2h_h1,totals_h1";
-            const res = await fetch(`https://api.the-odds-api.com/v4/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us,uk,eu&markets=${markets}&oddsFormat=american&dateFormat=iso`);
-            if (!res.ok) return [];
-            const rem = res.headers.get("x-requests-remaining");
-            if (rem) setApiQuota(rem);
-            return await res.json();
-          })
-        );
+        // Fetch in batches of 8 to avoid rate limits
+        const batches = [];
+        const batchSize = 8;
+        for (let i = 0; i < sport.keys.length; i += batchSize) {
+          batches.push(sport.keys.slice(i, i + batchSize));
+        }
+        const allResults = [];
+        for (const batch of batches) {
+          const results = await Promise.allSettled(
+            batch.map(async (key) => {
+              const markets = sport.id === "soccer"
+                ? "h2h,spreads,totals,btts"
+                : sport.id === "tennis"
+                ? "h2h,spreads,totals"
+                : "h2h,spreads,totals,h2h_h1,totals_h1";
+              try {
+                const res = await fetch(`https://api.the-odds-api.com/v4/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us,uk,eu&markets=${markets}&oddsFormat=american&dateFormat=iso`);
+                if (!res.ok) return [];
+                const rem = res.headers.get("x-requests-remaining");
+                if (rem) setApiQuota(rem);
+                const data = await res.json();
+                return Array.isArray(data) ? data : [];
+              } catch { return []; }
+            })
+          );
+          allResults.push(...results);
+        }
+        const results = allResults;
         const all = results.flatMap(r => r.status === "fulfilled" ? r.value : []);
         // Sort by most bet options (richest data first)
         all.sort((a, b) => (b.bookmakers?.[0]?.markets?.length || 0) - (a.bookmakers?.[0]?.markets?.length || 0));
-        setGames(all.slice(0, 25));
+        setGames(all.slice(0, 50));
       } catch { setError("Failed to load — check API key"); }
       setLoading(false);
     };
