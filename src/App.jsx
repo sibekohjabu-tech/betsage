@@ -38,40 +38,43 @@ const C = {
 const SPORTS = [
   {
     id: "soccer", label: "Football", icon: "⚽", color: C.aqua,
-    betTypes: ["Match Winner", "Over/Under Goals", "Both Teams Score", "1st Half Result", "Asian Handicap", "Clean Sheet"],
+    betTypes: ["Match Winner", "Over/Under Goals", "Both Teams Score", "1st Half Result", "Asian Handicap", "Double Chance"],
     keys: [
-      // Top European leagues
       "soccer_epl","soccer_spain_la_liga","soccer_germany_bundesliga","soccer_italy_serie_a",
       "soccer_france_ligue_one","soccer_netherlands_eredivisie","soccer_portugal_primeira_liga",
       "soccer_turkey_super_league","soccer_england_league1","soccer_england_league2",
-      "soccer_spain_segunda_division","soccer_germany_bundesliga2","soccer_italy_serie_b",
-      "soccer_france_ligue_two","soccer_belgium_first_div","soccer_scotland_premiership",
-      "soccer_greece_super_league","soccer_poland_ekstraklasa","soccer_czech_liga",
-      "soccer_austria_bundesliga","soccer_switzerland_superleague","soccer_denmark_superliga",
-      "soccer_sweden_allsvenskan","soccer_norway_eliteserien","soccer_finland_veikkausliiga",
-      "soccer_russia_premier_league","soccer_ukraine_premier_league","soccer_romania_liga_1",
-      "soccer_serbia_superliga","soccer_croatia_hnl","soccer_slovakia_superliga",
-      "soccer_hungary_liga","soccer_bulgaria_primera_liga",
-      // Africa & Middle East
-      "soccer_south_africa_premiership","soccer_morocco_botola_pro","soccer_egypt_premier_league",
-      "soccer_nigeria_professional_league","soccer_kenya_premier_league",
-      "soccer_ghana_premier_league","soccer_tunisia_ligue_pro","soccer_algeria_professional_league",
-      "soccer_israel_premier_league","soccer_saudi_arabia_pro_league","soccer_uae_pro_league",
-      // Americas
-      "soccer_usa_mls","soccer_usa_usl_championship","soccer_usa_usl_leaguetwo",
-      "soccer_brazil_campeonato","soccer_argentina_primera_division","soccer_argentina_reservas",
+      "soccer_spain_segunda_division","soccer_germany_bundesliga2","soccer_belgium_first_div",
+      "soccer_scotland_premiership","soccer_denmark_superliga","soccer_sweden_allsvenskan",
+      "soccer_norway_eliteserien","soccer_poland_ekstraklasa","soccer_czech_liga",
+      "soccer_austria_bundesliga","soccer_switzerland_superleague","soccer_greece_super_league",
+      "soccer_romania_liga_1","soccer_serbia_superliga","soccer_croatia_hnl",
+      "soccer_south_africa_premiership","soccer_egypt_premier_league","soccer_morocco_botola_pro",
+      "soccer_nigeria_professional_league","soccer_tunisia_ligue_pro","soccer_algeria_professional_league",
+      "soccer_ghana_premier_league","soccer_kenya_premier_league",
+      "soccer_saudi_arabia_pro_league","soccer_uae_pro_league","soccer_israel_premier_league",
+      "soccer_usa_mls","soccer_brazil_campeonato","soccer_argentina_primera_division",
       "soccer_mexico_ligamx","soccer_colombia_primera_a","soccer_chile_primera_division",
-      "soccer_peru_primera_division","soccer_ecuador_primera_a","soccer_venezuela_primera_liga",
+      "soccer_peru_primera_division","soccer_ecuador_primera_a",
       "soccer_conmebol_copa_libertadores","soccer_conmebol_copa_sudamericana",
-      "soccer_concacaf_champions_cup",
-      // Asia & Oceania
-      "soccer_japan_j_league","soccer_south_korea_kleague1","soccer_china_super_league",
-      "soccer_australia_aleague","soccer_india_super_league",
-      // International
-      "soccer_uefa_european_championship","soccer_uefa_nations_league",
-      "soccer_conmebol_copa_america","soccer_world_cup","soccer_fifa_world_cup_qualifiers_conmebol",
-      "soccer_uefa_champs_league","soccer_uefa_europa_league","soccer_uefa_europa_conference_league",
+      "soccer_japan_j_league","soccer_south_korea_kleague1","soccer_australia_aleague",
+      "soccer_china_super_league","soccer_india_super_league",
+      "soccer_uefa_nations_league","soccer_uefa_champs_league","soccer_uefa_europa_league",
     ],
+  },
+  {
+    id: "rugby", label: "Rugby", icon: "🏉", color: C.aqua,
+    betTypes: ["Match Winner", "Handicap", "Over/Under Points", "1st Half", "Try Scorer", "Winning Margin"],
+    keys: ["rugbyleague_nrl","rugbyunion_super_rugby","rugbyunion_united_rugby_championship","rugbyunion_premiership","rugbyunion_six_nations"],
+  },
+  {
+    id: "tennis", label: "Tennis", icon: "🎾", color: C.gold,
+    betTypes: ["Match Winner", "Set Betting", "Over/Under Games", "1st Set Winner", "Total Sets", "Break of Serve"],
+    keys: ["tennis_atp_french_open","tennis_wta_french_open","tennis_atp_wimbledon","tennis_wta_wimbledon","tennis_atp_us_open","tennis_wta_us_open","tennis_atp_aus_open","tennis_wta_aus_open"],
+  },
+  {
+    id: "cricket", label: "Cricket", icon: "🏏", color: C.gold,
+    betTypes: ["Match Winner", "Series Winner", "Top Batsman", "Over/Under Runs", "1st Innings Lead", "Method of Dismissal"],
+    keys: ["cricket_test_match","cricket_odi","cricket_ipl","cricket_t20_world_cup"],
   },
   {
     id: "mlb", label: "Baseball", icon: "⚾", color: C.gold,
@@ -81,22 +84,17 @@ const SPORTS = [
   {
     id: "nba", label: "Basketball", icon: "🏀", color: C.blue,
     betTypes: ["Match Winner", "Point Spread", "Over/Under Points", "1st Quarter", "Player Points", "Player Assists"],
-    keys: ["basketball_nba"],
+    keys: ["basketball_nba","basketball_euroleague"],
   },
   {
     id: "nhl", label: "Hockey", icon: "🏒", color: C.aqua,
-    betTypes: ["Match Winner", "Puck Line", "Over/Under Goals", "1st Period", "Player Shots", "Goal Scorer"],
-    keys: ["icehockey_nhl"],
+    betTypes: ["Match Winner", "Puck Line", "Over/Under Goals", "1st Period", "Player Shots", "Both Teams Score"],
+    keys: ["icehockey_nhl","icehockey_sweden_hockey_league","icehockey_nla"],
   },
   {
-    id: "tennis", label: "Tennis", icon: "🎾", color: C.gold,
-    betTypes: ["Match Winner", "Set Betting", "Over/Under Games", "1st Set Winner", "Total Sets", "Break of Serve"],
-    keys: ["tennis_atp_french_open","tennis_wta_french_open","tennis_atp_wimbledon","tennis_wta_wimbledon","tennis_atp_us_open","tennis_wta_us_open"],
-  },
-  {
-    id: "nfl", label: "NFL", icon: "🏈", color: C.blue,
-    betTypes: ["Match Winner", "Point Spread", "Over/Under Points", "1st Half", "Player Touchdowns", "Player Receiving Yards"],
-    keys: ["americanfootball_nfl"],
+    id: "darts", label: "Darts", icon: "🎯", color: C.red,
+    betTypes: ["Match Winner", "Correct Score", "Highest Checkout", "180s", "Most Legs Won", "First Leg"],
+    keys: ["darts_pdc_world_darts_championship","darts_one80_league","darts_masters","darts_premier_league"],
   },
   {
     id: "mma", label: "MMA/UFC", icon: "🥊", color: C.red,
@@ -129,6 +127,24 @@ function fmtDec(p) {
   if (d < 1.01 || d > 20) return null;
   return d.toFixed(2);
 }
+// Value bet: implied prob significantly lower than our model confidence
+// We estimate true prob using a simple vig-adjusted model
+function isValueBet(conf, decOdds) {
+  const impliedByOdds = (1 / decOdds) * 100;
+  // Value = our model says higher prob than market implies (after vig)
+  const vigAdjusted = impliedByOdds * 0.95; // strip ~5% vig
+  return conf > vigAdjusted + 5; // at least 5% edge over market
+}
+
+function valueBadge(conf, decOdds) {
+  const impliedByOdds = (1 / decOdds) * 100;
+  const edge = conf - impliedByOdds;
+  if (edge >= 12) return { label: "🔥 STRONG VALUE", color: "#2ecc71" };
+  if (edge >= 6) return { label: "✅ VALUE BET", color: "#00d4c8" };
+  if (edge >= 2) return { label: "📊 SLIGHT EDGE", color: "#f5c542" };
+  return null;
+}
+
 function fmtTime(iso) {
   if (!iso) return "";
   const d = new Date(iso);
@@ -221,27 +237,24 @@ function ConfBadge({ value }) {
 
 function BetPill({ bet, selected, onToggle }) {
   const color = bet.conf >= 82 ? C.green : bet.conf >= 72 ? C.aqua : bet.conf >= 62 ? C.gold : C.muted;
+  const vBadge = valueBadge(bet.conf, parseFloat(bet.odds));
   return (
     <div onClick={() => onToggle(bet)} style={{
-      background: selected ? `${color}18` : C.card,
+      background: selected ? `${color}15` : "#0a1220",
       border: `1px solid ${selected ? color : C.border}`,
-      borderRadius: 10, padding: "10px 12px", cursor: "pointer",
-      transition: "all 0.15s ease",
-      position: "relative",
+      borderRadius: 9, padding: "7px 9px", cursor: "pointer",
+      transition: "all 0.15s ease", position: "relative",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
-        <span style={{ fontSize: 10, color: C.muted, textTransform: "uppercase", letterSpacing: 0.8 }}>{bet.type}</span>
-        <ConfBadge value={bet.conf} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
+        <span style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 0.7 }}>{bet.type}</span>
+        <span style={{ fontFamily: "monospace", fontSize: 10, fontWeight: 800, color, background: `${color}18`, border: `1px solid ${color}35`, padding: "1px 5px", borderRadius: 10 }}>{bet.conf}%</span>
       </div>
+      <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 3, lineHeight: 1.3 }}>{bet.label}</div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: 14, fontWeight: 700, color: C.text }}>{bet.label}</span>
-        <span style={{ fontFamily: "monospace", fontSize: 15, fontWeight: 800, color }}>
-          {bet.odds}
-        </span>
+        <span style={{ fontFamily: "monospace", fontSize: 14, fontWeight: 900, color }}>{bet.odds}</span>
+        {vBadge && <span style={{ fontSize: 8, fontWeight: 800, color: vBadge.color, letterSpacing: 0.3 }}>{vBadge.label}</span>}
       </div>
-      {selected && (
-        <div style={{ position: "absolute", top: 6, left: 6, width: 6, height: 6, borderRadius: "50%", background: color }} />
-      )}
+      {selected && <div style={{ position: "absolute", top: 5, left: 5, width: 5, height: 5, borderRadius: "50%", background: color }} />}
     </div>
   );
 }
@@ -355,9 +368,21 @@ function SportLandingPage({ sport, onBack, selectedBets, onToggleBet }) {
       if (!ODDS_API_KEY) { setError("Add VITE_ODDS_API_KEY to Vercel"); setLoading(false); return; }
       setLoading(true);
       try {
-        // Fetch in batches of 8 to avoid rate limits
+        // Check sessionStorage cache first (5 min cache per sport)
+        const cacheKey = `betsage_${sport.id}`;
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          const { data, ts } = JSON.parse(cached);
+          if (Date.now() - ts < 5 * 60 * 1000) { // 5 min cache
+            setGames(data.slice(0, 50));
+            setLoading(false);
+            return;
+          }
+        }
+
+        // Fetch in batches of 5 to save API calls
         const batches = [];
-        const batchSize = 8;
+        const batchSize = 5;
         for (let i = 0; i < sport.keys.length; i += batchSize) {
           batches.push(sport.keys.slice(i, i + batchSize));
         }
@@ -386,7 +411,9 @@ function SportLandingPage({ sport, onBack, selectedBets, onToggleBet }) {
         const all = results.flatMap(r => r.status === "fulfilled" ? r.value : []);
         // Sort by most bet options (richest data first)
         all.sort((a, b) => (b.bookmakers?.[0]?.markets?.length || 0) - (a.bookmakers?.[0]?.markets?.length || 0));
-        setGames(all.slice(0, 50));
+        const finalGames = all.slice(0, 50);
+        sessionStorage.setItem(cacheKey, JSON.stringify({ data: finalGames, ts: Date.now() }));
+        setGames(finalGames);
       } catch { setError("Failed to load — check API key"); }
       setLoading(false);
     };
@@ -440,10 +467,56 @@ function SportLandingPage({ sport, onBack, selectedBets, onToggleBet }) {
         {!loading && gamesWithBets.map(({ game }) => (
           <GameCard key={game.id} game={game} sportColor={sport.color} selectedBets={selectedBets} onToggleBet={onToggleBet} />
         ))}
+        {/* Value Bets section */}
+        {!loading && gamesWithBets.length > 0 && (() => {
+          const valueBets = [];
+          gamesWithBets.forEach(({ game }) => {
+            const bets = extractBets(game);
+            bets.forEach(b => {
+              const vb = valueBadge(b.conf, parseFloat(b.odds));
+              if (vb) valueBets.push({ game, bet: b, badge: vb });
+            });
+          });
+          if (valueBets.length === 0) return null;
+          return (
+            <div style={{ marginTop: 8 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ fontSize: 16 }}>🔥</span>
+                <span style={{ color: C.gold, fontWeight: 800, fontSize: 13, letterSpacing: 0.5 }}>VALUE BETS</span>
+                <span style={{ background: C.goldDim, border: `1px solid ${C.goldBorder}`, color: C.gold, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>{valueBets.length} found</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {valueBets.slice(0, 6).map((vb, i) => {
+                  const betId = `${vb.game.id}-${vb.bet.label}`;
+                  const isSelected = !!selectedBets.find(s => s.id === betId);
+                  return (
+                    <div key={i} onClick={() => onToggleBet({ id: betId, match: `${vb.game.away_team} vs ${vb.game.home_team}`, bet: vb.bet.label, odds: parseFloat(vb.bet.odds), sport: vb.game.sport_key?.includes("soccer") ? "⚽" : "🎾", type: vb.bet.type })} style={{
+                      background: isSelected ? `${vb.badge.color}12` : "#0a1220",
+                      border: `1px solid ${isSelected ? vb.badge.color : C.goldBorder}`,
+                      borderRadius: 10, padding: "10px 12px", cursor: "pointer",
+                      display: "flex", alignItems: "center", gap: 10
+                    }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 10, color: C.muted, marginBottom: 2 }}>{vb.game.away_team} vs {vb.game.home_team}</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{vb.bet.label}</div>
+                        <div style={{ fontSize: 9, color: vb.badge.color, fontWeight: 700, marginTop: 2 }}>{vb.badge.label}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div style={{ fontFamily: "monospace", fontSize: 16, fontWeight: 900, color: vb.badge.color }}>{vb.bet.odds}</div>
+                        <div style={{ fontSize: 10, color: C.muted }}>{vb.bet.conf}% conf</div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
+
         {!loading && gamesWithBets.length === 0 && !error && (
           <div style={{ textAlign: "center", padding: "40px 0", color: C.muted, fontSize: 13 }}>
             <div style={{ fontSize: 32, marginBottom: 10 }}>😴</div>
-            No games available right now. Check back soon.
+            No games available right now — this sport may be off-season or check your API quota.
           </div>
         )}
       </div>
