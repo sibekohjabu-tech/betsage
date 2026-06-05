@@ -1,106 +1,35 @@
 import { useState, useEffect, useRef } from "react";
 
-const ODDS_API_KEY = import.meta.env.VITE_ODDS_API_KEY || "";
-
 // ─── THEME ───────────────────────────────────────────────────────────────────
 const C = {
-  bg: "#080d14",
-  card: "#0e1520",
-  cardHover: "#131d2e",
-  border: "#1a2540",
-  borderHover: "#243460",
-  // Aqua
-  aqua: "#00d4c8",
-  aquaDim: "rgba(0,212,200,0.10)",
-  aquaBorder: "rgba(0,212,200,0.28)",
-  // Gold
-  gold: "#f5c542",
-  goldDim: "rgba(245,197,66,0.10)",
-  goldBorder: "rgba(245,197,66,0.28)",
-  // Royal Blue
-  blue: "#3b6ff5",
-  blueDim: "rgba(59,111,245,0.12)",
-  blueBorder: "rgba(59,111,245,0.30)",
-  // Status
-  green: "#2ecc71",
-  greenDim: "rgba(46,204,113,0.10)",
-  greenBorder: "rgba(46,204,113,0.25)",
-  red: "#e74c3c",
-  redDim: "rgba(231,76,60,0.10)",
-  redBorder: "rgba(231,76,60,0.25)",
-  text: "#e8f0fe",
-  muted: "#5a7090",
-  subtle: "#8ba0bc",
-  navBg: "#060b12",
+  // Deep neon dark base
+  bg: "#050810", card: "#0a0f1e", cardHover: "#0f1628",
+  border: "#1a2545", borderHover: "#2a3a70",
+  // Neon Aqua — primary
+  aqua: "#00ffe5", aquaDim: "rgba(0,255,229,0.08)", aquaBorder: "rgba(0,255,229,0.30)",
+  // Neon Gold
+  gold: "#ffd700", goldDim: "rgba(255,215,0,0.08)", goldBorder: "rgba(255,215,0,0.30)",
+  // Neon Royal Blue
+  blue: "#4d7fff", blueDim: "rgba(77,127,255,0.10)", blueBorder: "rgba(77,127,255,0.32)",
+  // Neon Green
+  green: "#00ff88", greenDim: "rgba(0,255,136,0.08)", greenBorder: "rgba(0,255,136,0.28)",
+  // Neon Red
+  red: "#ff3d6e", redDim: "rgba(255,61,110,0.08)", redBorder: "rgba(255,61,110,0.28)",
+  // Neon Purple (accent)
+  purple: "#bf5fff", purpleDim: "rgba(191,95,255,0.08)", purpleBorder: "rgba(191,95,255,0.28)",
+  text: "#e8f2ff", muted: "#4a6080", subtle: "#7a9ab8", navBg: "#030609",
 };
 
-// ─── SPORTS ──────────────────────────────────────────────────────────────────
 const SPORTS = [
-  {
-    id: "soccer", label: "Football", icon: "⚽", color: C.aqua,
-    betTypes: ["Match Winner", "Over/Under Goals", "Both Teams Score", "1st Half Result", "Asian Handicap", "Double Chance"],
-    keys: [
-      "soccer_epl","soccer_spain_la_liga","soccer_germany_bundesliga","soccer_italy_serie_a",
-      "soccer_france_ligue_one","soccer_netherlands_eredivisie","soccer_portugal_primeira_liga",
-      "soccer_turkey_super_league","soccer_england_league1","soccer_england_league2",
-      "soccer_spain_segunda_division","soccer_germany_bundesliga2","soccer_belgium_first_div",
-      "soccer_scotland_premiership","soccer_denmark_superliga","soccer_sweden_allsvenskan",
-      "soccer_norway_eliteserien","soccer_poland_ekstraklasa","soccer_czech_liga",
-      "soccer_austria_bundesliga","soccer_switzerland_superleague","soccer_greece_super_league",
-      "soccer_romania_liga_1","soccer_serbia_superliga","soccer_croatia_hnl",
-      "soccer_south_africa_premiership","soccer_egypt_premier_league","soccer_morocco_botola_pro",
-      "soccer_nigeria_professional_league","soccer_tunisia_ligue_pro","soccer_algeria_professional_league",
-      "soccer_ghana_premier_league","soccer_kenya_premier_league",
-      "soccer_saudi_arabia_pro_league","soccer_uae_pro_league","soccer_israel_premier_league",
-      "soccer_usa_mls","soccer_brazil_campeonato","soccer_argentina_primera_division",
-      "soccer_mexico_ligamx","soccer_colombia_primera_a","soccer_chile_primera_division",
-      "soccer_peru_primera_division","soccer_ecuador_primera_a",
-      "soccer_conmebol_copa_libertadores","soccer_conmebol_copa_sudamericana",
-      "soccer_japan_j_league","soccer_south_korea_kleague1","soccer_australia_aleague",
-      "soccer_china_super_league","soccer_india_super_league",
-      "soccer_uefa_nations_league","soccer_uefa_champs_league","soccer_uefa_europa_league",
-    ],
-  },
-  {
-    id: "rugby", label: "Rugby", icon: "🏉", color: C.aqua,
-    betTypes: ["Match Winner", "Handicap", "Over/Under Points", "1st Half", "Try Scorer", "Winning Margin"],
-    keys: ["rugbyleague_nrl","rugbyunion_super_rugby","rugbyunion_united_rugby_championship","rugbyunion_premiership","rugbyunion_six_nations"],
-  },
-  {
-    id: "tennis", label: "Tennis", icon: "🎾", color: C.gold,
-    betTypes: ["Match Winner", "Set Betting", "Over/Under Games", "1st Set Winner", "Total Sets", "Break of Serve"],
-    keys: ["tennis_atp_french_open","tennis_wta_french_open","tennis_atp_wimbledon","tennis_wta_wimbledon","tennis_atp_us_open","tennis_wta_us_open","tennis_atp_aus_open","tennis_wta_aus_open"],
-  },
-  {
-    id: "cricket", label: "Cricket", icon: "🏏", color: C.gold,
-    betTypes: ["Match Winner", "Series Winner", "Top Batsman", "Over/Under Runs", "1st Innings Lead", "Method of Dismissal"],
-    keys: ["cricket_test_match","cricket_odi","cricket_ipl","cricket_t20_world_cup"],
-  },
-  {
-    id: "mlb", label: "Baseball", icon: "⚾", color: C.gold,
-    betTypes: ["Match Winner", "Run Line", "Over/Under Runs", "1st 5 Innings", "Player Hits", "Player Strikeouts"],
-    keys: ["baseball_mlb"],
-  },
-  {
-    id: "nba", label: "Basketball", icon: "🏀", color: C.blue,
-    betTypes: ["Match Winner", "Point Spread", "Over/Under Points", "1st Quarter", "Player Points", "Player Assists"],
-    keys: ["basketball_nba","basketball_euroleague"],
-  },
-  {
-    id: "nhl", label: "Hockey", icon: "🏒", color: C.aqua,
-    betTypes: ["Match Winner", "Puck Line", "Over/Under Goals", "1st Period", "Player Shots", "Both Teams Score"],
-    keys: ["icehockey_nhl","icehockey_sweden_hockey_league","icehockey_nla"],
-  },
-  {
-    id: "darts", label: "Darts", icon: "🎯", color: C.red,
-    betTypes: ["Match Winner", "Correct Score", "Highest Checkout", "180s", "Most Legs Won", "First Leg"],
-    keys: ["darts_pdc_world_darts_championship","darts_one80_league","darts_masters","darts_premier_league"],
-  },
-  {
-    id: "mma", label: "MMA/UFC", icon: "🥊", color: C.red,
-    betTypes: ["Fight Winner", "Method of Victory", "Round Betting", "Fight Goes Distance", "Over/Under Rounds", "KO/TKO"],
-    keys: ["mma_mixed_martial_arts"],
-  },
+  { id: "football", label: "Football", icon: "⚽", color: C.aqua, betTypes: ["Match Winner", "Over/Under Goals", "Both Teams Score", "1st Half Goals", "Asian Handicap", "Double Chance", "Correct Score"] },
+  { id: "rugby", label: "Rugby", icon: "🏉", color: C.aqua, betTypes: ["Match Winner", "Handicap", "Over/Under Points", "1st Half", "Winning Margin", "Try Scorer"] },
+  { id: "tennis", label: "Tennis", icon: "🎾", color: C.gold, betTypes: ["Match Winner", "Set Betting", "Over/Under Games", "1st Set Winner", "Total Sets", "Break of Serve"] },
+  { id: "cricket", label: "Cricket", icon: "🏏", color: C.gold, betTypes: ["Match Winner", "Top Batsman", "Over/Under Runs", "1st Innings Lead", "Player of Match", "Highest Opening Stand"] },
+  { id: "baseball", label: "Baseball", icon: "⚾", color: C.gold, betTypes: ["Match Winner", "Run Line", "Over/Under Runs", "1st 5 Innings", "Player Hits", "Player Strikeouts"] },
+  { id: "basketball", label: "Basketball", icon: "🏀", color: C.blue, betTypes: ["Match Winner", "Point Spread", "Over/Under Points", "1st Quarter", "Player Points", "Player Assists"] },
+  { id: "hockey", label: "Hockey", icon: "🏒", color: C.aqua, betTypes: ["Match Winner", "Puck Line", "Over/Under Goals", "1st Period", "Player Shots", "Both Teams Score"] },
+  { id: "darts", label: "Darts", icon: "🎯", color: C.red, betTypes: ["Match Winner", "Correct Score", "Most 180s", "Highest Checkout", "Winning Margin", "First Leg"] },
+  { id: "mma", label: "MMA/UFC", icon: "🥊", color: C.red, betTypes: ["Fight Winner", "Method of Victory", "Round Betting", "Fight Distance", "Over/Under Rounds", "KO/TKO"] },
 ];
 
 const WC_PICKS = [
@@ -108,423 +37,500 @@ const WC_PICKS = [
   { id:"wc2", home:"Germany", away:"Japan", flag_h:"🇩🇪", flag_a:"🇯🇵", time:"Jun 16 · 6PM", group:"Group E", win_pick:"Germany Win", win_odds:"1.55", win_conf:84, ou_pick:"Over 2.5 Goals", ou_odds:"1.68", ou_conf:82, reasoning:"Germany high press vs Japan transition. Germany scored 3+ in 6 of last 8." },
   { id:"wc3", home:"France", away:"Poland", flag_h:"🇫🇷", flag_a:"🇵🇱", time:"Jun 17 · 9PM", group:"Group A", win_pick:"France Win", win_odds:"1.44", win_conf:87, ou_pick:"Over 2.5 Goals", ou_odds:"1.71", ou_conf:76, reasoning:"France depth is elite. Mbappé + Dembélé vs Poland porous backline." },
   { id:"wc4", home:"Argentina", away:"Saudi Arabia", flag_h:"🇦🇷", flag_a:"🇸🇦", time:"Jun 18 · 3PM", group:"Group C", win_pick:"Argentina Win", win_odds:"1.35", win_conf:89, ou_pick:"Over 2.5 Goals", ou_odds:"1.80", ou_conf:74, reasoning:"Argentina motivated after Qatar scare. Statement game incoming." },
-  { id:"wc5", home:"England", away:"Serbia", flag_h:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", flag_a:"🇷🇸", time:"Jun 16 · 3PM", group:"Group B", win_pick:"England Win", win_odds:"1.50", win_conf:83, ou_pick:"Over 2.5 Goals", ou_odds:"1.78", ou_conf:71, reasoning:"England depth vs Serbia's direct style. Kane hungry for a big tournament." },
-  { id:"wc6", home:"Spain", away:"Croatia", flag_h:"🇪🇸", flag_a:"🇭🇷", time:"Jun 15 · 6PM", group:"Group F", win_pick:"Spain Win", win_odds:"1.58", win_conf:80, ou_pick:"Over 2.5 Goals", ou_odds:"1.69", ou_conf:79, reasoning:"Spain pressing overwhelms Croatia's aging midfield. High scoring likely." },
+  { id:"wc5", home:"England", away:"Serbia", flag_h:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", flag_a:"🇷🇸", time:"Jun 16 · 3PM", group:"Group B", win_pick:"England Win", win_odds:"1.50", win_conf:83, ou_pick:"Over 2.5 Goals", ou_odds:"1.78", ou_conf:71, reasoning:"England depth vs Serbia direct style. Kane hungry for big tournament." },
+  { id:"wc6", home:"Spain", away:"Croatia", flag_h:"🇪🇸", flag_a:"🇭🇷", time:"Jun 15 · 6PM", group:"Group F", win_pick:"Spain Win", win_odds:"1.58", win_conf:80, ou_pick:"Over 2.5 Goals", ou_odds:"1.69", ou_conf:79, reasoning:"Spain pressing overwhelms Croatia aging midfield." },
 ];
 
-// ─── HELPERS ─────────────────────────────────────────────────────────────────
-function americanToDecimal(p) {
-  if (!p) return 1.9;
-  const n = parseInt(p);
-  return n > 0 ? parseFloat(((n / 100) + 1).toFixed(2)) : parseFloat(((-100 / n) + 1).toFixed(2));
+function fmtDate() {
+  return new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
 }
-function impliedProb(p) {
-  const d = americanToDecimal(p);
-  return Math.round((1 / d) * 100);
-}
-function fmtDec(p) {
-  const d = americanToDecimal(p);
-  if (d < 1.01 || d > 20) return null;
-  return d.toFixed(2);
-}
-// Value bet: implied prob significantly lower than our model confidence
-// We estimate true prob using a simple vig-adjusted model
-function isValueBet(conf, decOdds) {
-  const impliedByOdds = (1 / decOdds) * 100;
-  // Value = our model says higher prob than market implies (after vig)
-  const vigAdjusted = impliedByOdds * 0.95; // strip ~5% vig
-  return conf > vigAdjusted + 5; // at least 5% edge over market
-}
-
-function valueBadge(conf, decOdds) {
-  const impliedByOdds = (1 / decOdds) * 100;
-  const edge = conf - impliedByOdds;
-  if (edge >= 12) return { label: "🔥 STRONG VALUE", color: "#2ecc71" };
-  if (edge >= 6) return { label: "✅ VALUE BET", color: "#00d4c8" };
-  if (edge >= 2) return { label: "📊 SLIGHT EDGE", color: "#f5c542" };
-  return null;
-}
-
-function fmtTime(iso) {
-  if (!iso) return "";
-  const d = new Date(iso);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) + " · " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-}
-function sportColor(key) {
-  if (!key) return C.aqua;
-  if (key.includes("soccer") || key.includes("football")) return C.aqua;
-  if (key.includes("baseball") || key.includes("mlb")) return C.gold;
-  if (key.includes("basketball") || key.includes("nba")) return C.blue;
-  if (key.includes("hockey") || key.includes("nhl")) return C.aqua;
-  if (key.includes("tennis")) return C.gold;
-  if (key.includes("football") || key.includes("nfl")) return C.blue;
-  if (key.includes("mma")) return C.red;
-  return C.aqua;
-}
-
-// Extract all market bets from a game
-function extractBets(game) {
-  const bm = game.bookmakers?.[0];
-  if (!bm) return [];
-  const bets = [];
-  const sportKey = game.sport_key || "";
-
-  for (const market of (bm.markets || [])) {
-    if (market.key === "h2h") {
-      for (const o of (market.outcomes || [])) {
-        const dec = fmtDec(o.price);
-        if (!dec) continue;
-        const conf = impliedProb(o.price);
-        bets.push({ type: "Match Winner", label: `${o.name} Win`, odds: dec, rawOdds: o.price, conf, category: "main" });
-      }
-    }
-    if (market.key === "spreads") {
-      for (const o of (market.outcomes || [])) {
-        const dec = fmtDec(o.price);
-        if (!dec) continue;
-        const conf = impliedProb(o.price);
-        const sign = o.point > 0 ? "+" : "";
-        const label = sportKey.includes("soccer") ? `${o.name} ${sign}${o.point} Handicap` :
-                      sportKey.includes("baseball") ? `${o.name} ${sign}${o.point} Run Line` :
-                      `${o.name} ${sign}${o.point} Spread`;
-        bets.push({ type: "Handicap/Spread", label, odds: dec, rawOdds: o.price, conf, category: "spread" });
-      }
-    }
-    if (market.key === "totals") {
-      for (const o of (market.outcomes || [])) {
-        const dec = fmtDec(o.price);
-        if (!dec) continue;
-        const conf = impliedProb(o.price);
-        const unit = sportKey.includes("soccer") ? "Goals" : sportKey.includes("baseball") ? "Runs" : sportKey.includes("hockey") ? "Goals" : sportKey.includes("tennis") ? "Games" : "Points";
-        bets.push({ type: `${o.name}/${unit}`, label: `${o.name} ${o.point} ${unit}`, odds: dec, rawOdds: o.price, conf, category: "totals" });
-      }
-    }
-    if (market.key === "h2h_h1") {
-      for (const o of (market.outcomes || [])) {
-        const dec = fmtDec(o.price);
-        if (!dec) continue;
-        bets.push({ type: "1st Half Winner", label: `1H: ${o.name}`, odds: dec, rawOdds: o.price, conf: impliedProb(o.price), category: "half" });
-      }
-    }
-    if (market.key === "totals_h1") {
-      for (const o of (market.outcomes || [])) {
-        const dec = fmtDec(o.price);
-        if (!dec) continue;
-        bets.push({ type: "1st Half O/U", label: `1H ${o.name} ${o.point}`, odds: dec, rawOdds: o.price, conf: impliedProb(o.price), category: "half" });
-      }
-    }
-    if (market.key === "btts") {
-      for (const o of (market.outcomes || [])) {
-        const dec = fmtDec(o.price);
-        if (!dec) continue;
-        bets.push({ type: "Both Teams Score", label: `BTTS: ${o.name}`, odds: dec, rawOdds: o.price, conf: impliedProb(o.price), category: "special" });
-      }
-    }
-  }
-  return bets.filter(b => b.conf >= 55).sort((a, b) => b.conf - a.conf);
-}
-
-// ─── COMPONENTS ──────────────────────────────────────────────────────────────
 
 function ConfBadge({ value }) {
   const color = value >= 82 ? C.green : value >= 72 ? C.aqua : value >= 62 ? C.gold : C.muted;
-  return (
-    <span style={{ fontFamily: "monospace", fontSize: 12, fontWeight: 800, color, background: `${color}18`, border: `1px solid ${color}40`, padding: "2px 8px", borderRadius: 20 }}>
-      {value}%
-    </span>
-  );
+  return <span style={{ fontFamily:"monospace", fontSize:11, fontWeight:800, color, background:`${color}18`, border:`1px solid ${color}35`, padding:"2px 7px", borderRadius:10 }}>{value}%</span>;
 }
 
-function BetPill({ bet, selected, onToggle }) {
-  const color = bet.conf >= 82 ? C.green : bet.conf >= 72 ? C.aqua : bet.conf >= 62 ? C.gold : C.muted;
-  const vBadge = valueBadge(bet.conf, parseFloat(bet.odds));
-  return (
-    <div onClick={() => onToggle(bet)} style={{
-      background: selected ? `${color}15` : "#0a1220",
-      border: `1px solid ${selected ? color : C.border}`,
-      borderRadius: 9, padding: "7px 9px", cursor: "pointer",
-      transition: "all 0.15s ease", position: "relative",
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 3 }}>
-        <span style={{ fontSize: 9, color: C.muted, textTransform: "uppercase", letterSpacing: 0.7 }}>{bet.type}</span>
-        <span style={{ fontFamily: "monospace", fontSize: 10, fontWeight: 800, color, background: `${color}18`, border: `1px solid ${color}35`, padding: "1px 5px", borderRadius: 10 }}>{bet.conf}%</span>
-      </div>
-      <div style={{ fontSize: 12, fontWeight: 700, color: C.text, marginBottom: 3, lineHeight: 1.3 }}>{bet.label}</div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontFamily: "monospace", fontSize: 14, fontWeight: 900, color }}>{bet.odds}</span>
-        {vBadge && <span style={{ fontSize: 8, fontWeight: 800, color: vBadge.color, letterSpacing: 0.3 }}>{vBadge.label}</span>}
-      </div>
-      {selected && <div style={{ position: "absolute", top: 5, left: 5, width: 5, height: 5, borderRadius: "50%", background: color }} />}
-    </div>
-  );
+function ValueBadge({ edge }) {
+  if (edge >= 12) return <span style={{ fontSize:9, fontWeight:800, color:C.green, background:C.greenDim, padding:"2px 6px", borderRadius:8, border:`1px solid ${C.greenBorder}` }}>🔥 STRONG VALUE</span>;
+  if (edge >= 6) return <span style={{ fontSize:9, fontWeight:800, color:C.aqua, background:C.aquaDim, padding:"2px 6px", borderRadius:8, border:`1px solid ${C.aquaBorder}` }}>✅ VALUE BET</span>;
+  if (edge >= 2) return <span style={{ fontSize:9, fontWeight:800, color:C.gold, background:C.goldDim, padding:"2px 6px", borderRadius:8, border:`1px solid ${C.goldBorder}` }}>📊 SLIGHT EDGE</span>;
+  return null;
 }
 
-function GameCard({ game, sportColor: sColor, selectedBets, onToggleBet }) {
+// ─── AI PICKS ENGINE ─────────────────────────────────────────────────────────
+async function fetchAIPicks(sport, betType = "all") {
+  const today = fmtDate();
+  const cacheKey = `sage_picks_${sport}_${betType}_${new Date().toDateString()}`;
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) return JSON.parse(cached);
+
+  const prompt = `Today is ${today}. You are an elite sports betting analyst with access to current sports data.
+
+Generate REAL today's picks for ${sport} - ${betType === "all" ? "all bet types" : betType}.
+
+Search for and use ACTUAL games happening TODAY or in the next 3 days for ${sport}.
+
+Return a JSON array of 8-12 picks. Each pick must be:
+{
+  "id": "unique_id",
+  "sport": "${sport}",
+  "league": "actual league name",
+  "home": "actual team/player name",
+  "away": "actual team/player name",
+  "kickoff": "time and date",
+  "bet": "specific bet recommendation",
+  "betType": "Match Winner|Over/Under|Handicap|Both Teams Score|1st Half|Value Bet|Player Prop",
+  "odds": "decimal odds like 1.75",
+  "confidence": number 60-92,
+  "edge": number (your conf% minus implied prob from odds - can be negative),
+  "isValue": boolean (edge > 5),
+  "reasoning": "2-3 sentence sharp analysis with specific stats, form, and edge",
+  "keyStats": ["stat1", "stat2", "stat3"],
+  "h2h": "brief head to head record",
+  "form": "last 5 games form eg WWDLW",
+  "prediction": "scoreline or result prediction"
+}
+
+IMPORTANT: 
+- Use REAL teams/players playing TODAY or next 3 days
+- Include a MIX of bet types: winners, overs, handicaps, value bets, player props where applicable
+- keyStats must be specific numbers (e.g. "Scored in 8/10 home games", "Over 2.5 in 7 last 10")
+- Higher confidence (80%+) only for clear mismatches or strong trending picks
+- Mark isValue:true only when genuine value exists
+- For football include African/SA leagues, European leagues, International games
+- odds must be realistic decimal format
+
+Return ONLY the JSON array, no other text.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 4000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        system: "You are Sage, an elite AI sports betting analyst. You have access to web search to find TODAY's actual fixtures and current form data. Always search for real current games before generating picks. Return only valid JSON arrays.",
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "[]";
+    const clean = text.replace(/```json|```/g, "").trim();
+    const jsonMatch = clean.match(/\[[\s\S]*\]/);
+    const picks = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
+    sessionStorage.setItem(cacheKey, JSON.stringify(picks));
+    return picks;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
+}
+
+// Auto accumulator generator
+async function generateAccumulator(sport, count, betPreference) {
+  const today = fmtDate();
+  const prompt = `Today is ${today}. Generate a ${count}-leg accumulator for ${sport} with preference for "${betPreference}" bets.
+
+Search for REAL games today/next 3 days. Pick the ${count} HIGHEST CONFIDENCE legs.
+
+Return JSON:
+{
+  "legs": [
+    {
+      "id": "unique",
+      "match": "Away vs Home",
+      "league": "league name",
+      "bet": "specific bet",
+      "odds": decimal number,
+      "confidence": number,
+      "kickoff": "time",
+      "reasoning": "one sharp sentence"
+    }
+  ],
+  "totalOdds": combined decimal odds,
+  "overallConf": average confidence,
+  "sageTip": "one sentence tip about this acca"
+}
+
+Only return JSON, no other text.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        system: "You are Sage, elite sports betting analyst. Search for real current fixtures. Return only valid JSON.",
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "{}";
+    const clean = text.replace(/```json|```/g, "").trim();
+    const jsonMatch = clean.match(/\{[\s\S]*\}/);
+    return jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+  } catch (e) { return null; }
+}
+
+// ─── PICK CARD ────────────────────────────────────────────────────────────────
+function PickCard({ pick, index, selectedBets, onToggle }) {
+  const [visible, setVisible] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [analysis, setAnalysis] = useState("");
-  const [loadingAI, setLoadingAI] = useState(false);
-  const [filter, setFilter] = useState("all");
+  useEffect(() => { const t = setTimeout(() => setVisible(true), index * 60 + 100); return () => clearTimeout(t); }, [index]);
 
-  const bets = extractBets(game);
-  const topBet = bets[0];
-  if (!topBet) return null;
+  const isSelected = !!selectedBets.find(s => s.id === pick.id);
+  const color = pick.confidence >= 82 ? C.green : pick.confidence >= 72 ? C.aqua : pick.confidence >= 62 ? C.gold : C.muted;
+  const impliedProb = Math.round((1 / parseFloat(pick.odds || 2)) * 100);
+  const edge = pick.edge || (pick.confidence - impliedProb);
 
-  const categories = ["all", ...new Set(bets.map(b => b.category))];
-  const filtered = filter === "all" ? bets : bets.filter(b => b.category === filter);
-  const catLabels = { all: "All", main: "Winner", spread: "Handicap", totals: "O/U", half: "1st Half", special: "Special" };
-
-  const anySelected = bets.some(b => selectedBets.find(s => s.id === `${game.id}-${b.label}`));
-
-  const getAnalysis = async () => {
-    if (analysis) { setExpanded(!expanded); return; }
-    setExpanded(true);
-    setLoadingAI(true);
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514", max_tokens: 250,
-          system: "You are Sage, elite AI sports betting analyst. Give a sharp 3-sentence breakdown covering: 1) form/stats, 2) key edge/angle, 3) best bet recommendation. Be specific and direct.",
-          messages: [{ role: "user", content: `${game.away_team} vs ${game.home_team} | Sport: ${game.sport_key} | Top pick: ${topBet.label} @ ${topBet.odds} | Confidence: ${topBet.conf}%` }]
-        })
-      });
-      const data = await res.json();
-      setAnalysis(data.content?.[0]?.text || "Strong value on current market.");
-    } catch { setAnalysis("Sharp money aligned on this line."); }
-    setLoadingAI(false);
-  };
+  const betTypeColor = pick.betType === "Value Bet" ? C.gold :
+    pick.betType?.includes("Over") ? C.aqua :
+    pick.betType?.includes("1st Half") ? C.blue :
+    pick.betType?.includes("Player") ? "#a855f7" : C.muted;
 
   return (
     <div style={{
-      background: C.card, border: `1px solid ${anySelected ? sColor + "50" : C.border}`,
+      background: isSelected ? `${color}10` : C.card,
+      border: `1px solid ${isSelected ? color : C.border}`,
       borderRadius: 14, overflow: "hidden",
-      borderTop: `2px solid ${sColor}`,
+      borderTop: `2px solid ${pick.isValue ? C.gold : color}`,
+      boxShadow: isSelected ? `0 0 16px ${color}20, 0 0 1px ${color}50` : "none",
+      opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(14px)",
+      transition: "opacity 0.4s ease, transform 0.4s ease",
     }}>
-      {/* Match header */}
-      <div style={{ padding: "12px 14px 10px", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 15, fontWeight: 800, color: C.text, marginBottom: 2 }}>
-            {game.away_team} <span style={{ color: C.muted, fontWeight: 400, fontSize: 12 }}>vs</span> {game.home_team}
+      {/* Value banner */}
+      {pick.isValue && (
+        <div style={{ background: `linear-gradient(90deg, ${C.goldDim}, transparent)`, padding: "4px 14px", borderBottom: `1px solid ${C.goldBorder}`, display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 12 }}>🔥</span>
+          <span style={{ fontSize: 11, fontWeight: 800, color: C.gold, letterSpacing: 0.5 }}>VALUE BET DETECTED · +{edge?.toFixed(1)}% EDGE</span>
+        </div>
+      )}
+
+      <div style={{ padding: "12px 14px" }}>
+        {/* League + time */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <span style={{ fontSize: 10, color: C.muted, fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.8 }}>{pick.league}</span>
+          <span style={{ fontSize: 10, color: C.muted }}>{pick.kickoff}</span>
+        </div>
+
+        {/* Match */}
+        <div style={{ fontSize: 16, fontWeight: 800, color: C.text, marginBottom: 4 }}>
+          {pick.away} <span style={{ color: C.muted, fontWeight: 400, fontSize: 12 }}>vs</span> {pick.home}
+        </div>
+
+        {/* Bet recommendation */}
+        <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 10, flexWrap: "wrap" }}>
+          <span style={{ background: `${color}18`, border: `1px solid ${color}40`, color, padding: "4px 12px", borderRadius: 20, fontWeight: 800, fontSize: 13, fontFamily: "monospace" }}>{pick.bet}</span>
+          <span style={{ fontFamily: "monospace", fontSize: 16, fontWeight: 900, color }}>{pick.odds}</span>
+          <span style={{ fontSize: 9, color: betTypeColor, background: `${betTypeColor}15`, border: `1px solid ${betTypeColor}30`, padding: "2px 8px", borderRadius: 8, fontWeight: 700 }}>{pick.betType}</span>
+          {edge > 2 && <ValueBadge edge={edge} />}
+        </div>
+
+        {/* Confidence + form */}
+        <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 10 }}>
+          <ConfBadge value={pick.confidence} />
+          {pick.form && (
+            <div style={{ display: "flex", gap: 3 }}>
+              {pick.form.split("").map((r, i) => (
+                <span key={i} style={{ width: 18, height: 18, borderRadius: "50%", background: r === "W" ? C.greenDim : r === "L" ? C.redDim : C.goldDim, border: `1px solid ${r === "W" ? C.green : r === "L" ? C.red : C.gold}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 800, color: r === "W" ? C.green : r === "L" ? C.red : C.gold }}>{r}</span>
+              ))}
+            </div>
+          )}
+          {pick.prediction && <span style={{ fontSize: 11, color: C.muted, fontStyle: "italic" }}>Pred: {pick.prediction}</span>}
+        </div>
+
+        {/* Key stats */}
+        {pick.keyStats && pick.keyStats.length > 0 && (
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+            {pick.keyStats.map((stat, i) => (
+              <span key={i} style={{ fontSize: 10, color: C.subtle, background: "#0a1220", border: `1px solid ${C.border}`, padding: "3px 8px", borderRadius: 6 }}>📊 {stat}</span>
+            ))}
           </div>
-          <div style={{ fontSize: 11, color: C.muted }}>{fmtTime(game.commence_time)}</div>
-        </div>
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <button onClick={getAnalysis} style={{
-            background: C.blueDim, border: `1px solid ${C.blueBorder}`,
-            color: C.blue, borderRadius: 8, padding: "4px 10px",
-            fontSize: 11, fontWeight: 700, cursor: "pointer"
-          }}>🧠 AI</button>
-        </div>
-      </div>
+        )}
 
-      {/* AI Analysis */}
-      {expanded && (
-        <div style={{ margin: "0 14px 10px", padding: "10px 12px", background: "#0a1220", borderRadius: 10, border: `1px solid ${C.blueBorder}` }}>
-          {loadingAI
-            ? <div style={{ display: "flex", gap: 5 }}>{[0,1,2].map(i => <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: C.aqua, animation: `dot-bounce 1.2s ${i*0.2}s infinite ease-in-out` }} />)}</div>
-            : <span style={{ fontSize: 12, color: C.subtle, lineHeight: 1.65 }}><span style={{ color: C.aqua, fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8 }}>🧠 Sage · </span>{analysis}</span>
-          }
-        </div>
-      )}
+        {/* Expand for full analysis */}
+        <button onClick={() => setExpanded(!expanded)} style={{ background: "transparent", border: "none", color: C.muted, fontSize: 11, cursor: "pointer", padding: 0, marginBottom: expanded ? 8 : 0 }}>
+          {expanded ? "▲ Less" : "▼ Full Analysis"}
+        </button>
 
-      {/* Category filter pills */}
-      {bets.length > 3 && (
-        <div style={{ display: "flex", gap: 6, padding: "0 14px 10px", overflowX: "auto" }}>
-          {categories.map(cat => (
-            <button key={cat} onClick={() => setFilter(cat)} style={{
-              background: filter === cat ? `${sColor}20` : "transparent",
-              border: `1px solid ${filter === cat ? sColor : C.border}`,
-              color: filter === cat ? sColor : C.muted,
-              borderRadius: 20, padding: "3px 12px", cursor: "pointer",
-              fontSize: 11, fontWeight: 600, whiteSpace: "nowrap"
-            }}>{catLabels[cat] || cat}</button>
-          ))}
-        </div>
-      )}
+        {expanded && (
+          <div style={{ padding: "10px 12px", background: "#0a1220", borderRadius: 10, border: `1px solid ${C.blueBorder}`, marginBottom: 10 }}>
+            <div style={{ fontSize: 10, color: C.blue, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>🧠 Sage Analysis</div>
+            <div style={{ fontSize: 13, color: C.subtle, lineHeight: 1.65 }}>{pick.reasoning}</div>
+            {pick.h2h && <div style={{ marginTop: 8, fontSize: 11, color: C.muted }}>⚔️ H2H: {pick.h2h}</div>}
+          </div>
+        )}
 
-      {/* Bet options grid */}
-      <div style={{ padding: "0 14px 14px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-        {filtered.map((bet, i) => {
-          const betId = `${game.id}-${bet.label}`;
-          const isSelected = !!selectedBets.find(s => s.id === betId);
-          return (
-            <BetPill key={i} bet={bet} selected={isSelected} onToggle={() => onToggleBet({ id: betId, match: `${game.away_team} vs ${game.home_team}`, bet: bet.label, odds: parseFloat(bet.odds), sport: game.sport_key?.includes("soccer") ? "⚽" : game.sport_key?.includes("baseball") ? "⚾" : game.sport_key?.includes("basketball") ? "🏀" : "🏒", type: bet.type })} />
-          );
-        })}
+        {/* Add to Acca */}
+        <button onClick={() => onToggle({ id: pick.id, match: `${pick.away} vs ${pick.home}`, bet: pick.bet, odds: parseFloat(pick.odds) || 1.8, sport: pick.sport, type: pick.betType, league: pick.league })} style={{
+          width: "100%", padding: "8px",
+          background: isSelected ? C.redDim : C.aquaDim,
+          border: `1px solid ${isSelected ? C.redBorder : C.aquaBorder}`,
+          color: isSelected ? C.red : C.aqua,
+          borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 700, transition: "all 0.15s"
+        }}>{isSelected ? "✕ Remove from Accumulator" : "+ Add to Accumulator"}</button>
       </div>
     </div>
   );
 }
 
-function SportLandingPage({ sport, onBack, selectedBets, onToggleBet }) {
-  const [games, setGames] = useState([]);
+// ─── SPORT PICKS PAGE ─────────────────────────────────────────────────────────
+function SportPicksPage({ sport, onBack, selectedBets, onToggleBet }) {
+  const [picks, setPicks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMsg, setLoadingMsg] = useState("Searching for today's games...");
+  const [activeBetType, setActiveBetType] = useState("All");
+  const [showValueOnly, setShowValueOnly] = useState(false);
   const [error, setError] = useState("");
-  const [betTypeFilter, setBetTypeFilter] = useState("All");
-  const [apiQuota, setApiQuota] = useState(null);
 
   useEffect(() => {
-    const fetchGames = async () => {
-      if (!ODDS_API_KEY) { setError("Add VITE_ODDS_API_KEY to Vercel"); setLoading(false); return; }
+    const load = async () => {
       setLoading(true);
-      try {
-        // Check sessionStorage cache first (5 min cache per sport)
-        const cacheKey = `betsage_${sport.id}`;
-        const cached = sessionStorage.getItem(cacheKey);
-        if (cached) {
-          const { data, ts } = JSON.parse(cached);
-          if (Date.now() - ts < 5 * 60 * 1000) { // 5 min cache
-            setGames(data.slice(0, 50));
-            setLoading(false);
-            return;
-          }
-        }
+      const msgs = [
+        "Scanning live fixtures...",
+        "Analysing form & stats...",
+        "Calculating value bets...",
+        "Generating AI insights...",
+      ];
+      let i = 0;
+      const interval = setInterval(() => {
+        setLoadingMsg(msgs[Math.min(i++, msgs.length - 1)]);
+      }, 2000);
 
-        // Fetch in batches of 5 to save API calls
-        const batches = [];
-        const batchSize = 5;
-        for (let i = 0; i < sport.keys.length; i += batchSize) {
-          batches.push(sport.keys.slice(i, i + batchSize));
-        }
-        const allResults = [];
-        for (const batch of batches) {
-          const results = await Promise.allSettled(
-            batch.map(async (key) => {
-              const markets = sport.id === "soccer"
-                ? "h2h,spreads,totals,btts"
-                : sport.id === "tennis"
-                ? "h2h,spreads,totals"
-                : "h2h,spreads,totals,h2h_h1,totals_h1";
-              try {
-                const res = await fetch(`https://api.the-odds-api.com/v4/sports/${key}/odds?apiKey=${ODDS_API_KEY}&regions=us,uk,eu&markets=${markets}&oddsFormat=american&dateFormat=iso`);
-                if (!res.ok) return [];
-                const rem = res.headers.get("x-requests-remaining");
-                if (rem) setApiQuota(rem);
-                const data = await res.json();
-                return Array.isArray(data) ? data : [];
-              } catch { return []; }
-            })
-          );
-          allResults.push(...results);
-        }
-        const results = allResults;
-        const all = results.flatMap(r => r.status === "fulfilled" ? r.value : []);
-        // Sort by most bet options (richest data first)
-        all.sort((a, b) => (b.bookmakers?.[0]?.markets?.length || 0) - (a.bookmakers?.[0]?.markets?.length || 0));
-        const finalGames = all.slice(0, 50);
-        sessionStorage.setItem(cacheKey, JSON.stringify({ data: finalGames, ts: Date.now() }));
-        setGames(finalGames);
-      } catch { setError("Failed to load — check API key"); }
+      try {
+        const data = await fetchAIPicks(sport.label, activeBetType === "All" ? "all" : activeBetType);
+        setPicks(data);
+        if (data.length === 0) setError("No picks generated — try refreshing");
+      } catch {
+        setError("Failed to generate picks");
+      }
+      clearInterval(interval);
       setLoading(false);
     };
-    fetchGames();
-  }, [sport.id]);
+    load();
+  }, [sport.id, activeBetType]);
 
-  const gamesWithBets = games.map(g => ({ game: g, bets: extractBets(g) })).filter(({ bets }) => bets.length > 0);
+  const filtered = picks.filter(p => {
+    if (showValueOnly && !p.isValue) return false;
+    return true;
+  });
+
+  const valuePicks = picks.filter(p => p.isValue);
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, color: C.text }}>
       {/* Header */}
-      <div style={{ padding: "52px 16px 0", background: `linear-gradient(180deg, ${sport.color}18 0%, transparent 100%)` }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+      <div style={{ padding: "52px 16px 0", background: `linear-gradient(180deg, ${sport.color}15 0%, transparent 100%)` }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <button onClick={onBack} style={{ background: C.card, border: `1px solid ${C.border}`, color: C.muted, width: 36, height: 36, borderRadius: 10, cursor: "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center" }}>←</button>
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 24 }}>{sport.icon}</span>
-              <span style={{ fontSize: 22, fontWeight: 800, color: C.text }}>{sport.label}</span>
+              <span style={{ fontSize: 22 }}>{sport.icon}</span>
+              <span style={{ fontSize: 20, fontWeight: 800 }}>{sport.label}</span>
+              {loading && <div style={{ width: 14, height: 14, borderRadius: "50%", border: `2px solid ${sport.color}`, borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />}
             </div>
             <div style={{ color: C.muted, fontSize: 11, marginTop: 1 }}>
-              {loading ? "Loading..." : `${gamesWithBets.length} games · ${apiQuota ? `${apiQuota} calls left` : ""}`}
+              {loading ? loadingMsg : `${filtered.length} picks · ${valuePicks.length} value bets found`}
             </div>
           </div>
         </div>
+
+        {/* Value toggle */}
+        {!loading && valuePicks.length > 0 && (
+          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+            <button onClick={() => setShowValueOnly(false)} style={{ flex: 1, padding: "8px", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 700, background: !showValueOnly ? C.aquaDim : "#0a1220", border: `1px solid ${!showValueOnly ? C.aquaBorder : C.border}`, color: !showValueOnly ? C.aqua : C.muted }}>All Picks ({picks.length})</button>
+            <button onClick={() => setShowValueOnly(true)} style={{ flex: 1, padding: "8px", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 700, background: showValueOnly ? C.goldDim : "#0a1220", border: `1px solid ${showValueOnly ? C.goldBorder : C.border}`, color: showValueOnly ? C.gold : C.muted }}>🔥 Value Only ({valuePicks.length})</button>
+          </div>
+        )}
 
         {/* Bet type filter */}
         <div style={{ overflowX: "auto", paddingBottom: 12 }}>
           <div style={{ display: "flex", gap: 6, paddingRight: 4 }}>
             {["All", ...sport.betTypes].map(t => (
-              <button key={t} onClick={() => setBetTypeFilter(t)} style={{
-                background: betTypeFilter === t ? `${sport.color}20` : "transparent",
-                border: `1px solid ${betTypeFilter === t ? sport.color : C.border}`,
-                color: betTypeFilter === t ? sport.color : C.muted,
+              <button key={t} onClick={() => setActiveBetType(t)} style={{
+                background: activeBetType === t ? `${sport.color}20` : "transparent",
+                border: `1px solid ${activeBetType === t ? sport.color : C.border}`,
+                color: activeBetType === t ? sport.color : C.muted,
                 borderRadius: 20, padding: "5px 14px", cursor: "pointer",
-                fontSize: 12, fontWeight: 600, whiteSpace: "nowrap", transition: "all 0.15s"
+                fontSize: 11, fontWeight: 600, whiteSpace: "nowrap", transition: "all 0.15s"
               }}>{t}</button>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Games */}
+      {/* Content */}
       <div style={{ padding: "8px 16px 100px", display: "flex", flexDirection: "column", gap: 12 }}>
         {error && <div style={{ background: C.redDim, border: `1px solid ${C.redBorder}`, borderRadius: 10, padding: "12px 14px", color: C.red, fontSize: 13 }}>⚠️ {error}</div>}
+
         {loading && (
-          <div style={{ textAlign: "center", padding: "50px 0", color: C.muted }}>
-            <div style={{ width: 28, height: 28, borderRadius: "50%", border: `2px solid ${sport.color}`, borderTopColor: "transparent", animation: "spin 0.8s linear infinite", margin: "0 auto 12px" }} />
-            <div style={{ fontSize: 13 }}>Scanning {sport.keys.length} leagues...</div>
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <div style={{ width: 48, height: 48, borderRadius: "50%", border: `3px solid ${sport.color}`, borderTopColor: "transparent", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+            <div style={{ fontSize: 15, color: C.text, fontWeight: 700, marginBottom: 6 }}>{loadingMsg}</div>
+            <div style={{ fontSize: 12, color: C.muted }}>Sage is searching live fixtures & analysing form data</div>
+            <div style={{ display: "flex", justifyContent: "center", gap: 8, marginTop: 16 }}>
+              {["🔍 Web Search", "📊 Form Data", "💰 Odds Check"].map((s, i) => (
+                <span key={i} style={{ fontSize: 10, color: C.muted, background: C.card, padding: "4px 10px", borderRadius: 20, border: `1px solid ${C.border}` }}>{s}</span>
+              ))}
+            </div>
           </div>
         )}
-        {!loading && gamesWithBets.map(({ game }) => (
-          <GameCard key={game.id} game={game} sportColor={sport.color} selectedBets={selectedBets} onToggleBet={onToggleBet} />
-        ))}
-        {/* Value Bets section */}
-        {!loading && gamesWithBets.length > 0 && (() => {
-          const valueBets = [];
-          gamesWithBets.forEach(({ game }) => {
-            const bets = extractBets(game);
-            bets.forEach(b => {
-              const vb = valueBadge(b.conf, parseFloat(b.odds));
-              if (vb) valueBets.push({ game, bet: b, badge: vb });
-            });
-          });
-          if (valueBets.length === 0) return null;
-          return (
-            <div style={{ marginTop: 8 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <span style={{ fontSize: 16 }}>🔥</span>
-                <span style={{ color: C.gold, fontWeight: 800, fontSize: 13, letterSpacing: 0.5 }}>VALUE BETS</span>
-                <span style={{ background: C.goldDim, border: `1px solid ${C.goldBorder}`, color: C.gold, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 10 }}>{valueBets.length} found</span>
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {valueBets.slice(0, 6).map((vb, i) => {
-                  const betId = `${vb.game.id}-${vb.bet.label}`;
-                  const isSelected = !!selectedBets.find(s => s.id === betId);
-                  return (
-                    <div key={i} onClick={() => onToggleBet({ id: betId, match: `${vb.game.away_team} vs ${vb.game.home_team}`, bet: vb.bet.label, odds: parseFloat(vb.bet.odds), sport: vb.game.sport_key?.includes("soccer") ? "⚽" : "🎾", type: vb.bet.type })} style={{
-                      background: isSelected ? `${vb.badge.color}12` : "#0a1220",
-                      border: `1px solid ${isSelected ? vb.badge.color : C.goldBorder}`,
-                      borderRadius: 10, padding: "10px 12px", cursor: "pointer",
-                      display: "flex", alignItems: "center", gap: 10
-                    }}>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 10, color: C.muted, marginBottom: 2 }}>{vb.game.away_team} vs {vb.game.home_team}</div>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{vb.bet.label}</div>
-                        <div style={{ fontSize: 9, color: vb.badge.color, fontWeight: 700, marginTop: 2 }}>{vb.badge.label}</div>
-                      </div>
-                      <div style={{ textAlign: "right" }}>
-                        <div style={{ fontFamily: "monospace", fontSize: 16, fontWeight: 900, color: vb.badge.color }}>{vb.bet.odds}</div>
-                        <div style={{ fontSize: 10, color: C.muted }}>{vb.bet.conf}% conf</div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })()}
 
-        {!loading && gamesWithBets.length === 0 && !error && (
-          <div style={{ textAlign: "center", padding: "40px 0", color: C.muted, fontSize: 13 }}>
+        {!loading && filtered.map((pick, i) => (
+          <PickCard key={pick.id} pick={pick} index={i} selectedBets={selectedBets} onToggle={onToggleBet} />
+        ))}
+
+        {!loading && filtered.length === 0 && !error && (
+          <div style={{ textAlign: "center", padding: "40px 20px", color: C.muted }}>
             <div style={{ fontSize: 32, marginBottom: 10 }}>😴</div>
-            No games available right now — this sport may be off-season or check your API quota.
+            <div style={{ fontSize: 13 }}>No picks for this filter. Try "All".</div>
           </div>
         )}
       </div>
+
+      {/* Floating acca counter */}
+      {selectedBets.length > 0 && (
+        <div style={{ position: "fixed", bottom: 24, right: 16, zIndex: 90, background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`, borderRadius: 30, padding: "10px 18px 10px 14px", display: "flex", alignItems: "center", gap: 8, cursor: "pointer", boxShadow: `0 4px 20px ${C.aqua}40` }} onClick={() => onBack()}>
+          <span style={{ fontSize: 16 }}>🎰</span>
+          <span style={{ color: "#060b12", fontWeight: 900, fontSize: 13 }}>{selectedBets.length} leg{selectedBets.length !== 1 ? "s" : ""} · View Acca</span>
+        </div>
+      )}
     </div>
   );
 }
 
-function AccumulatorTab({ legs, onRemove, onClear }) {
+// ─── AUTO ACCUMULATOR ────────────────────────────────────────────────────────
+function AutoAccaBuilder({ onAdd }) {
+  const [sport, setSport] = useState("Football");
+  const [count, setCount] = useState(5);
+  const [preference, setPreference] = useState("Mixed");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+
+  const generate = async () => {
+    setLoading(true);
+    setResult(null);
+    setError("");
+    const data = await generateAccumulator(sport, count, preference);
+    if (data && data.legs) setResult(data);
+    else setError("Failed to generate — try again");
+    setLoading(false);
+  };
+
+  const preferences = ["Mixed", "Match Winners", "Overs", "1st Half Goals", "Handicaps", "Value Bets Only", "High Confidence Only"];
+
+  return (
+    <div style={{ background: C.card, border: `1px solid ${C.goldBorder}`, borderRadius: 14, padding: "16px", marginBottom: 16, borderTop: `2px solid ${C.gold}` }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+        <span style={{ fontSize: 20 }}>⚡</span>
+        <div>
+          <div style={{ color: C.gold, fontWeight: 800, fontSize: 14 }}>Auto Accumulator Builder</div>
+          <div style={{ color: C.muted, fontSize: 11 }}>AI generates your best acca for today</div>
+        </div>
+      </div>
+
+      {/* Sport selector */}
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>Sport</div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {["Football", "Tennis", "Basketball", "Baseball", "Mixed"].map(s => (
+            <button key={s} onClick={() => setSport(s)} style={{ background: sport === s ? C.goldDim : "#0a1220", border: `1px solid ${sport === s ? C.goldBorder : C.border}`, color: sport === s ? C.gold : C.muted, borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>{s}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Legs count */}
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>Number of Legs</div>
+        <div style={{ display: "flex", gap: 6 }}>
+          {[3, 4, 5, 6, 8, 10].map(n => (
+            <button key={n} onClick={() => setCount(n)} style={{ background: count === n ? C.aquaDim : "#0a1220", border: `1px solid ${count === n ? C.aquaBorder : C.border}`, color: count === n ? C.aqua : C.muted, borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontSize: 13, fontWeight: 700 }}>{n}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Bet preference */}
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 6 }}>Bet Preference</div>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+          {preferences.map(p => (
+            <button key={p} onClick={() => setPreference(p)} style={{ background: preference === p ? C.blueDim : "#0a1220", border: `1px solid ${preference === p ? C.blueBorder : C.border}`, color: preference === p ? C.blue : C.muted, borderRadius: 8, padding: "5px 10px", cursor: "pointer", fontSize: 11, fontWeight: 600, whiteSpace: "nowrap" }}>{p}</button>
+          ))}
+        </div>
+      </div>
+
+      <button onClick={generate} disabled={loading} style={{
+        width: "100%", padding: "12px",
+        background: loading ? "#1a2540" : `linear-gradient(135deg, ${C.gold}, #d4a017)`,
+        border: "none", borderRadius: 10, cursor: loading ? "not-allowed" : "pointer",
+        color: loading ? C.muted : "#060b12", fontSize: 14, fontWeight: 900,
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8
+      }}>
+        {loading ? (
+          <><div style={{ width: 16, height: 16, borderRadius: "50%", border: `2px solid ${C.muted}`, borderTopColor: "transparent", animation: "spin 0.8s linear infinite" }} />Sage is building your acca...</>
+        ) : (
+          <>⚡ Generate {count}-Leg Accumulator</>
+        )}
+      </button>
+
+      {error && <div style={{ color: C.red, fontSize: 12, marginTop: 8, textAlign: "center" }}>{error}</div>}
+
+      {/* Result */}
+      {result && (
+        <div style={{ marginTop: 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div>
+              <div style={{ color: C.gold, fontWeight: 800, fontSize: 14 }}>Generated Accumulator</div>
+              <div style={{ color: C.muted, fontSize: 11 }}>{result.sageTip}</div>
+            </div>
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontFamily: "monospace", fontWeight: 900, fontSize: 20, color: C.gold }}>{result.totalOdds?.toFixed(2)}x</div>
+              <ConfBadge value={result.overallConf} />
+            </div>
+          </div>
+
+          {result.legs?.map((leg, i) => (
+            <div key={i} style={{ background: "#0a1220", border: `1px solid ${C.border}`, borderRadius: 10, padding: "10px 12px", marginBottom: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 2 }}>{leg.league} · {leg.kickoff}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 3 }}>{leg.match}</div>
+                  <div style={{ fontSize: 12, color: C.aqua, fontWeight: 700 }}>{leg.bet}</div>
+                  <div style={{ fontSize: 11, color: C.muted, marginTop: 3 }}>{leg.reasoning}</div>
+                </div>
+                <div style={{ textAlign: "right", marginLeft: 10 }}>
+                  <div style={{ fontFamily: "monospace", fontSize: 15, fontWeight: 900, color: C.aqua }}>{typeof leg.odds === "number" ? leg.odds.toFixed(2) : leg.odds}</div>
+                  <ConfBadge value={leg.confidence} />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <button onClick={() => {
+            result.legs?.forEach(leg => onAdd({
+              id: `auto_${leg.match}_${leg.bet}`,
+              match: leg.match, bet: leg.bet,
+              odds: typeof leg.odds === "number" ? leg.odds : parseFloat(leg.odds) || 1.8,
+              sport: sport, type: "Auto Acca", league: leg.league
+            }));
+          }} style={{
+            width: "100%", padding: "12px",
+            background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`,
+            border: "none", borderRadius: 10, cursor: "pointer",
+            color: "#060b12", fontSize: 14, fontWeight: 900,
+          }}>Add All {result.legs?.length} Legs to Accumulator →</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── ACCUMULATOR TAB ─────────────────────────────────────────────────────────
+function AccumulatorTab({ legs, onRemove, onClear, onAdd }) {
   const [stake, setStake] = useState("10");
   const [bookmaker, setBookmaker] = useState("betway");
   const totalOdds = legs.reduce((acc, l) => acc * l.odds, 1);
@@ -536,42 +542,40 @@ function AccumulatorTab({ legs, onRemove, onClear }) {
     { id: "betway", name: "Betway", url: "https://www.betway.com", color: "#00a651" },
     { id: "paripesa", name: "PariPesa", url: "https://paripesa.bet", color: "#f5c542" },
     { id: "easybets", name: "EasyBets", url: "https://www.easybets.co.za", color: "#00d4c8" },
-    { id: "bet365", name: "Bet365", url: "https://www.bet365.com", color: "#027b5b" },
     { id: "sportybet", name: "SportyBet", url: "https://www.sportybet.com", color: "#ff6b35" },
     { id: "betika", name: "Betika", url: "https://www.betika.com", color: "#e91e63" },
     { id: "1xbet", name: "1xBet", url: "https://www.1xbet.com", color: "#1565c0" },
     { id: "hollywoodbets", name: "Hollywood", url: "https://www.hollywoodbets.net", color: "#ffd700" },
     { id: "supabets", name: "Supabets", url: "https://www.supabets.co.za", color: "#9c27b0" },
+    { id: "bet365", name: "Bet365", url: "https://www.bet365.com", color: "#027b5b" },
     { id: "pinnacle", name: "Pinnacle", url: "https://www.pinnacle.com", color: "#e4002b" },
-    { id: "draftkings", name: "DraftKings", url: "https://www.draftkings.com", color: "#62d76b" },
-    { id: "fanduel", name: "FanDuel", url: "https://www.fanduel.com", color: "#1493ff" },
   ];
 
   const selectedBook = bookmakers.find(b => b.id === bookmaker) || bookmakers[0];
 
   return (
     <div style={{ padding: "0 16px" }}>
+      {/* Auto Builder */}
+      <AutoAccaBuilder onAdd={onAdd} />
+
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <div style={{ color: C.muted, fontSize: 10, letterSpacing: 1, textTransform: "uppercase" }}>
-          Accumulator · {legs.length} leg{legs.length !== 1 ? "s" : ""}
-        </div>
+        <div style={{ color: C.muted, fontSize: 10, letterSpacing: 1, textTransform: "uppercase" }}>My Accumulator · {legs.length} leg{legs.length !== 1 ? "s" : ""}</div>
         {legs.length > 0 && <button onClick={onClear} style={{ background: "transparent", border: "none", color: C.red, fontSize: 11, cursor: "pointer", fontWeight: 600 }}>Clear all</button>}
       </div>
 
       {legs.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "40px 20px", color: C.muted }}>
-          <div style={{ fontSize: 36, marginBottom: 12 }}>🎰</div>
+        <div style={{ textAlign: "center", padding: "30px 20px", color: C.muted, background: C.card, borderRadius: 14, border: `1px solid ${C.border}` }}>
+          <div style={{ fontSize: 32, marginBottom: 10 }}>🎰</div>
           <div style={{ fontSize: 14, marginBottom: 6, color: C.subtle }}>No legs added yet</div>
-          <div style={{ fontSize: 12 }}>Tap any bet pill on a game to add it</div>
+          <div style={{ fontSize: 12 }}>Use Auto Builder above or tap picks on any sport</div>
         </div>
       ) : (
         <>
-          {/* Legs */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden", marginBottom: 12 }}>
             {legs.map((leg, i) => (
               <div key={leg.id} style={{ display: "flex", alignItems: "center", padding: "11px 14px", borderBottom: i < legs.length - 1 ? `1px solid ${C.border}` : "none" }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 1 }}>{leg.sport} · {leg.match}</div>
+                  <div style={{ fontSize: 10, color: C.muted, marginBottom: 1 }}>{leg.sport} · {leg.league || ""} · {leg.match}</div>
                   <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{leg.bet}</div>
                   <div style={{ fontSize: 10, color: C.muted, marginTop: 1 }}>{leg.type}</div>
                 </div>
@@ -583,7 +587,6 @@ function AccumulatorTab({ legs, onRemove, onClear }) {
             ))}
           </div>
 
-          {/* Odds + stake */}
           <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "14px 16px", marginBottom: 12 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
               <span style={{ color: C.muted, fontSize: 12 }}>Combined Odds</span>
@@ -600,104 +603,40 @@ function AccumulatorTab({ legs, onRemove, onClear }) {
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <div style={{ flex: 1, background: "#0a1220", borderRadius: 8, padding: "10px 12px" }}>
-                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.6 }}>Profit</div>
+                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Profit</div>
                 <div style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 18, color: C.green, marginTop: 2 }}>+${profit}</div>
               </div>
               <div style={{ flex: 1, background: "#0a1220", borderRadius: 8, padding: "10px 12px" }}>
-                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.6 }}>Return</div>
+                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Return</div>
                 <div style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 18, color: C.text, marginTop: 2 }}>${payout}</div>
               </div>
             </div>
           </div>
 
-          {/* Bookmaker selector */}
           <div style={{ marginBottom: 10 }}>
             <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8, marginBottom: 8 }}>Bet With</div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {bookmakers.map(b => (
-                <button key={b.id} onClick={() => setBookmaker(b.id)} style={{
-                  background: bookmaker === b.id ? `${b.color}20` : "#0a1220",
-                  border: `1px solid ${bookmaker === b.id ? b.color : C.border}`,
-                  color: bookmaker === b.id ? b.color : C.muted,
-                  borderRadius: 8, padding: "6px 12px", cursor: "pointer",
-                  fontSize: 12, fontWeight: 700, transition: "all 0.15s"
-                }}>{b.name}</button>
+                <button key={b.id} onClick={() => setBookmaker(b.id)} style={{ background: bookmaker === b.id ? `${b.color}20` : "#0a1220", border: `1px solid ${bookmaker === b.id ? b.color : C.border}`, color: bookmaker === b.id ? b.color : C.muted, borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 11, fontWeight: 700 }}>{b.name}</button>
               ))}
             </div>
           </div>
 
-          {/* Place bet button */}
           <button onClick={() => window.open(selectedBook.url, "_blank")} style={{
             width: "100%", padding: "15px",
             background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`,
             border: "none", borderRadius: 12, cursor: "pointer",
-            color: "#060b12", fontSize: 15, fontWeight: 900, letterSpacing: 0.3,
-            display: "flex", alignItems: "center", justifyContent: "center", gap: 8
-          }}>
-            Place on {selectedBook.name} →
-          </button>
+            color: "#060b12", fontSize: 15, fontWeight: 900, letterSpacing: 0.3
+          }}>Place on {selectedBook.name} →</button>
         </>
       )}
     </div>
   );
 }
 
-function WCCard({ pick, betMode, onAdd, inAccum }) {
-  const [expanded, setExpanded] = useState(false);
-  const isWin = betMode === "win";
-  const selBet = isWin ? pick.win_pick : pick.ou_pick;
-  const selOdds = isWin ? pick.win_odds : pick.ou_odds;
-  const selConf = isWin ? pick.win_conf : pick.ou_conf;
-  const added = inAccum;
-
-  return (
-    <div style={{
-      background: C.card, border: `1px solid ${added ? C.aquaBorder : C.border}`,
-      borderRadius: 14, padding: "12px 14px",
-      borderTop: `2px solid ${C.blue}`,
-    }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }} onClick={() => setExpanded(!expanded)}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ fontSize: 20 }}>{pick.flag_a}</span>
-          <div>
-            <div style={{ color: C.text, fontWeight: 700, fontSize: 14 }}>{pick.away} vs {pick.home} <span style={{ fontSize: 16 }}>{pick.flag_h}</span></div>
-            <div style={{ color: C.muted, fontSize: 10, marginTop: 1 }}>{pick.group} · {pick.time}</div>
-          </div>
-        </div>
-        <span style={{ color: C.muted, fontSize: 12 }}>{expanded ? "▲" : "▼"}</span>
-      </div>
-      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-        <div style={{ flex: 1, padding: "8px 10px", borderRadius: 8, background: isWin ? C.greenDim : "#0a1220", border: `1px solid ${isWin ? C.greenBorder : C.border}` }}>
-          <div style={{ fontSize: 9, color: C.muted, marginBottom: 2, textTransform: "uppercase", letterSpacing: 0.6 }}>Straight Win</div>
-          <div style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 13, color: isWin ? C.green : C.subtle }}>{pick.win_pick}</div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-            <span style={{ fontFamily: "monospace", fontSize: 12, color: C.gold }}>{pick.win_odds}</span>
-            <ConfBadge value={pick.win_conf} />
-          </div>
-        </div>
-        <div style={{ flex: 1, padding: "8px 10px", borderRadius: 8, background: !isWin ? C.aquaDim : "#0a1220", border: `1px solid ${!isWin ? C.aquaBorder : C.border}` }}>
-          <div style={{ fontSize: 9, color: C.muted, marginBottom: 2, textTransform: "uppercase", letterSpacing: 0.6 }}>Over 2.5 Goals</div>
-          <div style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 13, color: !isWin ? C.aqua : C.subtle }}>{pick.ou_pick}</div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
-            <span style={{ fontFamily: "monospace", fontSize: 12, color: C.gold }}>{pick.ou_odds}</span>
-            <ConfBadge value={pick.ou_conf} />
-          </div>
-        </div>
-      </div>
-      {expanded && <div style={{ marginBottom: 10, padding: "9px 10px", background: "#0a1220", borderRadius: 8, fontSize: 12, color: C.subtle, lineHeight: 1.6 }}><span style={{ color: C.aqua, fontWeight: 700, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8 }}>🧠 Analysis · </span>{pick.reasoning}</div>}
-      <button onClick={() => onAdd({ id: `wc-${pick.id}`, match: `${pick.away} vs ${pick.home}`, bet: selBet, odds: parseFloat(selOdds), sport: "🏆 WC26", type: isWin ? "Match Winner" : "Over/Under" })} style={{
-        width: "100%", padding: "8px",
-        background: added ? C.redDim : C.aquaDim,
-        border: `1px solid ${added ? C.redBorder : C.aquaBorder}`,
-        color: added ? C.red : C.aqua,
-        borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 700, transition: "all 0.15s"
-      }}>{added ? "✕ Remove" : `+ Add ${selBet}`}</button>
-    </div>
-  );
-}
-
+// ─── ASK SAGE ────────────────────────────────────────────────────────────────
 function AskSagePanel({ onClose }) {
-  const [messages, setMessages] = useState([{ role: "assistant", content: "I'm Sage — your AI edge finder. Ask me about any game, player prop, line movement, or betting angle across any sport." }]);
+  const [messages, setMessages] = useState([{ role: "assistant", content: "I'm Sage — your AI edge finder. I search real-time fixtures, form data, and odds to give you today's sharpest picks. Ask me anything." }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef(null);
@@ -714,25 +653,30 @@ function AskSagePanel({ onClose }) {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 1000,
-          system: "You are Sage, elite AI sports betting analyst with expertise in football (soccer), baseball, basketball, hockey, tennis, NFL, and MMA. You specialise in finding value bets, player props, handicaps, and both team/individual performance trends. Sharp, direct, data-driven. Max 3 paragraphs. Always state confidence % and key edge.",
-          messages,
+          tools: [{ type: "web_search_20250305", name: "web_search" }],
+          system: `You are Sage, elite AI sports betting analyst. Today is ${fmtDate()}. 
+You have web search to find REAL current fixtures, form, injuries, and odds.
+Always search for current data before answering. Be sharp, direct, specific.
+Give confidence %, odds, edge analysis. Max 3 paragraphs. No fluff.`,
+          messages: messages.concat([{ role: "user", content: userMsg }]),
         })
       });
       const data = await res.json();
-      setMessages(prev => [...prev, { role: "assistant", content: data.content?.map(b => b.text || "").join("") || "Error." }]);
+      const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "Error.";
+      setMessages(prev => [...prev, { role: "assistant", content: text }]);
     } catch { setMessages(prev => [...prev, { role: "assistant", content: "Connection error." }]); }
     setLoading(false);
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(4,8,18,0.85)", backdropFilter: "blur(12px)", zIndex: 100, display: "flex", alignItems: "flex-end", justifyContent: "center" }} onClick={e => e.target === e.currentTarget && onClose()}>
-      <div style={{ width: "100%", maxWidth: 480, background: "#0a1220", border: `1px solid ${C.aquaBorder}`, borderRadius: "20px 20px 0 0", display: "flex", flexDirection: "column", height: "75vh" }}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(4,8,18,0.9)", backdropFilter: "blur(12px)", zIndex: 100, display: "flex", alignItems: "flex-end", justifyContent: "center" }} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div style={{ width: "100%", maxWidth: 480, background: "#0a1220", border: `1px solid ${C.aquaBorder}`, borderRadius: "20px 20px 0 0", display: "flex", flexDirection: "column", height: "78vh" }}>
         <div style={{ padding: "16px 18px 12px", borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 34, height: 34, borderRadius: 10, background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🧠</div>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20 }}>🧠</div>
             <div>
               <div style={{ color: C.text, fontWeight: 800, fontSize: 16 }}>Ask Sage</div>
-              <div style={{ color: C.green, fontSize: 10, fontFamily: "monospace" }}>● AI Analyst · LIVE</div>
+              <div style={{ color: C.green, fontSize: 10, fontFamily: "monospace" }}>● Live Search · AI Powered</div>
             </div>
           </div>
           <button onClick={onClose} style={{ background: C.card, border: `1px solid ${C.border}`, color: C.muted, width: 32, height: 32, borderRadius: 8, cursor: "pointer", fontSize: 16 }}>✕</button>
@@ -740,16 +684,27 @@ function AskSagePanel({ onClose }) {
         <div style={{ flex: 1, overflowY: "auto", padding: "14px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
           {messages.map((m, i) => (
             <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-              <div style={{ maxWidth: "88%", background: m.role === "user" ? `linear-gradient(135deg, ${C.aqua}, ${C.blue})` : "#131d2e", border: m.role === "assistant" ? `1px solid ${C.border}` : "none", borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", padding: "10px 14px", color: m.role === "user" ? "#060b12" : C.subtle, fontSize: 13, lineHeight: 1.65, fontWeight: m.role === "user" ? 700 : 400 }}>
+              <div style={{ maxWidth: "90%", background: m.role === "user" ? `linear-gradient(135deg, ${C.aqua}, ${C.blue})` : "#131d2e", border: m.role === "assistant" ? `1px solid ${C.border}` : "none", borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px", padding: "10px 14px", color: m.role === "user" ? "#060b12" : C.subtle, fontSize: 13, lineHeight: 1.65, fontWeight: m.role === "user" ? 700 : 400 }}>
                 {m.content}
               </div>
             </div>
           ))}
-          {loading && <div style={{ display: "flex", gap: 5, padding: "4px 0" }}>{[0,1,2].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: C.aqua, animation: `dot-bounce 1.2s ${i*0.2}s infinite ease-in-out` }} />)}</div>}
+          {loading && (
+            <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "8px 0" }}>
+              <div style={{ display: "flex", gap: 4 }}>{[0,1,2].map(i => <div key={i} style={{ width: 7, height: 7, borderRadius: "50%", background: C.aqua, animation: `dot-bounce 1.2s ${i*0.2}s infinite ease-in-out` }} />)}</div>
+              <span style={{ fontSize: 11, color: C.muted }}>Sage is searching...</span>
+            </div>
+          )}
           <div ref={bottomRef} />
         </div>
-        <div style={{ padding: "12px 14px 24px", borderTop: `1px solid ${C.border}`, display: "flex", gap: 8 }}>
-          <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Ask about any game, prop, or angle..." style={{ flex: 1, background: "#131d2e", border: `1px solid ${C.border}`, borderRadius: 12, padding: "11px 14px", color: C.text, fontSize: 13, outline: "none" }} />
+        {/* Quick prompts */}
+        <div style={{ padding: "8px 14px 0", display: "flex", gap: 6, overflowX: "auto" }}>
+          {["Best picks today", "Value bets now", "Safe accumulator", "Football tonight"].map(q => (
+            <button key={q} onClick={() => { setInput(q); }} style={{ background: C.card, border: `1px solid ${C.border}`, color: C.muted, borderRadius: 20, padding: "4px 12px", cursor: "pointer", fontSize: 11, whiteSpace: "nowrap" }}>{q}</button>
+          ))}
+        </div>
+        <div style={{ padding: "10px 14px 24px", borderTop: `1px solid ${C.border}`, display: "flex", gap: 8, marginTop: 8 }}>
+          <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Ask about any game, pick, or angle..." style={{ flex: 1, background: "#131d2e", border: `1px solid ${C.border}`, borderRadius: 12, padding: "11px 14px", color: C.text, fontSize: 13, outline: "none" }} />
           <button onClick={send} disabled={loading} style={{ background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`, border: "none", borderRadius: 12, width: 46, height: 46, cursor: "pointer", fontSize: 18, display: "flex", alignItems: "center", justifyContent: "center", opacity: loading ? 0.5 : 1 }}>➤</button>
         </div>
       </div>
@@ -769,8 +724,8 @@ export default function BetSage() {
   const toggleBet = (leg) => setAccumLegs(prev => prev.find(l => l.id === leg.id) ? prev.filter(l => l.id !== leg.id) : [...prev, leg]);
   const removeBet = (leg) => setAccumLegs(prev => prev.filter(l => l.id !== leg.id));
   const clearBets = () => setAccumLegs([]);
+  const addAll = (legs) => { legs.forEach(l => { if (!accumLegs.find(x => x.id === l.id)) setAccumLegs(prev => [...prev, l]); }); };
 
-  // Sport landing page
   if (activeSport) {
     return (
       <>
@@ -782,32 +737,14 @@ export default function BetSage() {
           ::-webkit-scrollbar-thumb{background:#1a2540;border-radius:2px;}
           @keyframes dot-bounce{0%,100%{transform:translateY(0);opacity:0.3}50%{transform:translateY(-5px);opacity:1}}
           @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+          @keyframes pulse-aqua{0%,100%{box-shadow:0 0 0 0 rgba(0,255,229,0.5),0 0 20px rgba(0,255,229,0.15)}50%{box-shadow:0 0 0 10px rgba(0,255,229,0),0 0 30px rgba(0,255,229,0.25)}}
           input::placeholder{color:#2a3a55;}
           input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
           button{font-family:'Inter',sans-serif;}
         `}</style>
-        <SportLandingPage sport={activeSport} onBack={() => setActiveSport(null)} selectedBets={accumLegs} onToggleBet={toggleBet} />
-        {/* Floating acca counter */}
-        {accumLegs.length > 0 && (
-          <div onClick={() => { setActiveSport(null); setActiveTab("acca"); }} style={{
-            position: "fixed", bottom: 24, right: 16, zIndex: 90,
-            background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`,
-            borderRadius: 30, padding: "10px 18px 10px 14px",
-            display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
-            boxShadow: `0 4px 20px ${C.aqua}40`
-          }}>
-            <span style={{ fontSize: 16 }}>🎰</span>
-            <span style={{ color: "#060b12", fontWeight: 900, fontSize: 13 }}>{accumLegs.length} leg{accumLegs.length !== 1 ? "s" : ""} · View Acca</span>
-          </div>
-        )}
+        <SportPicksPage sport={activeSport} onBack={() => setActiveSport(null)} selectedBets={accumLegs} onToggleBet={toggleBet} />
         {showChat && <AskSagePanel onClose={() => setShowChat(false)} />}
-        <button onClick={() => setShowChat(true)} style={{
-          position: "fixed", bottom: 90, right: 16, zIndex: 89,
-          background: `linear-gradient(135deg, ${C.gold}, #d4a017)`,
-          border: "none", borderRadius: "50%", width: 48, height: 48,
-          cursor: "pointer", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: `0 4px 16px ${C.gold}40`
-        }}>🧠</button>
+        <button onClick={() => setShowChat(true)} style={{ position: "fixed", bottom: accumLegs.length > 0 ? 90 : 24, right: 16, zIndex: 89, background: `linear-gradient(135deg, ${C.gold}, #d4a017)`, border: "none", borderRadius: "50%", width: 48, height: 48, cursor: "pointer", fontSize: 20, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 16px ${C.gold}40` }}>🧠</button>
       </>
     );
   }
@@ -816,7 +753,7 @@ export default function BetSage() {
     { id: "home", label: "Sports", icon: "🏠" },
     { id: "acca", label: "Acca", icon: "🎰" },
     { id: "wc", label: "WC 2026", icon: "🏆" },
-    { id: "tracker", label: "Tracker", icon: "📊" },
+    { id: "tracker", label: "History", icon: "📊" },
   ];
 
   return (
@@ -829,8 +766,9 @@ export default function BetSage() {
         ::-webkit-scrollbar-thumb{background:#1a2540;border-radius:2px;}
         @keyframes dot-bounce{0%,100%{transform:translateY(0);opacity:0.3}50%{transform:translateY(-5px);opacity:1}}
         @keyframes pulse-aqua{0%,100%{box-shadow:0 0 0 0 rgba(0,212,200,0.4)}50%{box-shadow:0 0 0 10px rgba(0,212,200,0)}}
-        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes pulse-gold{0%,100%{box-shadow:0 0 0 0 rgba(245,197,66,0.4)}50%{box-shadow:0 0 0 8px rgba(245,197,66,0)}}
         @keyframes shimmer{0%{opacity:0.6}50%{opacity:1}100%{opacity:0.6}}
+        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         input::placeholder{color:#2a3a55;}
         input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
         button{font-family:'Inter',sans-serif;}
@@ -838,35 +776,25 @@ export default function BetSage() {
 
       <div style={{ maxWidth: 480, margin: "0 auto", paddingBottom: 90 }}>
 
-        {/* HOME TAB */}
         {activeTab === "home" && (
           <>
-            {/* Header */}
             <div style={{ padding: "52px 16px 20px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                     <div style={{ width: 32, height: 32, borderRadius: 9, background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17 }}>🧿</div>
-                    <span style={{ fontSize: 22, fontWeight: 900, letterSpacing: -0.5, color: C.text }}>BetSage</span>
+                    <span style={{ fontSize: 22, fontWeight: 900, letterSpacing: -0.5, textShadow: "0 0 20px rgba(0,255,229,0.6), 0 0 40px rgba(0,255,229,0.3)" }}>BetSage</span>
+                    <span style={{ fontSize: 10, color: C.aqua, background: C.aquaDim, border: `1px solid ${C.aquaBorder}`, padding: "2px 8px", borderRadius: 10, fontWeight: 700 }}>AI Powered</span>
                   </div>
-                  <div style={{ color: C.muted, fontSize: 11 }}>
-                    {new Date().toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" })}
-                  </div>
+                  <div style={{ color: C.muted, fontSize: 11 }}>{fmtDate()}</div>
                 </div>
-                <button onClick={() => setShowChat(true)} style={{
-                  background: `linear-gradient(135deg, ${C.aqua}20, ${C.blue}20)`,
-                  border: `1px solid ${C.aquaBorder}`,
-                  borderRadius: 12, padding: "8px 14px", cursor: "pointer",
-                  display: "flex", alignItems: "center", gap: 6,
-                  animation: "pulse-aqua 3s infinite"
-                }}>
+                <button onClick={() => setShowChat(true)} style={{ background: `linear-gradient(135deg, ${C.aqua}20, ${C.blue}20)`, border: `1px solid ${C.aquaBorder}`, borderRadius: 12, padding: "8px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, animation: "pulse-aqua 3s infinite" }}>
                   <span style={{ fontSize: 16 }}>🧠</span>
                   <span style={{ color: C.aqua, fontSize: 12, fontWeight: 700 }}>Ask Sage</span>
                 </button>
               </div>
 
-              {/* Stats strip */}
-              <div style={{ background: `linear-gradient(135deg, ${C.aqua}10, ${C.blue}10)`, border: `1px solid ${C.aquaBorder}`, borderRadius: 14, padding: "14px 18px", display: "flex", justifyContent: "space-between", marginBottom: 24 }}>
+              <div style={{ background: `linear-gradient(135deg, ${C.aqua}10, ${C.blue}10)`, border: `1px solid ${C.aquaBorder}`, borderRadius: 14, padding: "14px 18px", display: "flex", justifyContent: "space-between", marginBottom: 16 }}>
                 {[
                   { label: "Win Rate", val: "67.4%", color: C.green },
                   { label: "Avg Edge", val: "+3.1%", color: C.aqua },
@@ -879,17 +807,21 @@ export default function BetSage() {
                 ))}
               </div>
 
-              {/* WC Banner */}
-              <div onClick={() => setActiveTab("wc")} style={{
-                background: `linear-gradient(135deg, ${C.blue}20, ${C.aqua}10)`,
-                border: `1px solid ${C.blueBorder}`,
-                borderRadius: 14, padding: "14px 16px",
-                display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 24
-              }}>
-                <div style={{ fontSize: 32 }}>🏆</div>
+              {/* AI Pick of the Day */}
+              <div onClick={() => setShowChat(true)} style={{ background: `linear-gradient(135deg, ${C.gold}15, ${C.goldDim})`, border: `1px solid ${C.goldBorder}`, borderRadius: 14, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 16, animation: "pulse-gold 3s infinite" }}>
+                <div style={{ fontSize: 28 }}>⚡</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ color: C.gold, fontWeight: 800, fontSize: 13, marginBottom: 2 }}>Ask Sage for Today's Best Picks</div>
+                  <div style={{ color: C.muted, fontSize: 11 }}>AI searches real fixtures & generates sharp picks daily</div>
+                </div>
+                <div style={{ color: C.gold, fontSize: 18 }}>→</div>
+              </div>
+
+              <div onClick={() => setActiveTab("wc")} style={{ background: `linear-gradient(135deg, ${C.blue}20, ${C.aqua}10)`, border: `1px solid ${C.blueBorder}`, borderRadius: 14, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12, cursor: "pointer", marginBottom: 20 }}>
+                <div style={{ fontSize: 28 }}>🏆</div>
                 <div>
-                  <div style={{ color: C.text, fontWeight: 800, fontSize: 15 }}>World Cup 2026</div>
-                  <div style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>Special high-confidence picks · Tap to view</div>
+                  <div style={{ color: C.text, fontWeight: 800, fontSize: 14 }}>World Cup 2026</div>
+                  <div style={{ color: C.muted, fontSize: 11, marginTop: 2 }}>Special high-confidence picks</div>
                 </div>
                 <div style={{ marginLeft: "auto", color: C.blue, fontSize: 18 }}>→</div>
               </div>
@@ -897,95 +829,118 @@ export default function BetSage() {
               <div style={{ color: C.muted, fontSize: 11, letterSpacing: 1, textTransform: "uppercase", marginBottom: 14 }}>Select a Sport</div>
             </div>
 
-            {/* Sport cards grid */}
             <div style={{ padding: "0 16px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               {SPORTS.map(sport => (
-                <div key={sport.id} onClick={() => setActiveSport(sport)} style={{
-                  background: C.card, border: `1px solid ${C.border}`,
-                  borderRadius: 16, padding: "18px 16px",
-                  cursor: "pointer", transition: "all 0.2s ease",
-                  borderTop: `2px solid ${sport.color}`,
-                  position: "relative", overflow: "hidden"
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.background = C.cardHover; e.currentTarget.style.borderColor = sport.color + "60"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = C.card; e.currentTarget.style.borderColor = C.border; }}
+                <div key={sport.id} onClick={() => setActiveSport(sport)} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, padding: "18px 16px", cursor: "pointer", transition: "all 0.2s ease", borderTop: `2px solid ${sport.color}`, position: "relative", overflow: "hidden", boxShadow: `0 0 0 0 ${sport.color}` }}
+                  onMouseEnter={e => { e.currentTarget.style.background = C.cardHover; e.currentTarget.style.boxShadow = `0 0 20px ${sport.color}25, 0 0 1px ${sport.color}60`; e.currentTarget.style.borderColor = sport.color + "50"; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = C.card; e.currentTarget.style.boxShadow = "none"; e.currentTarget.style.borderColor = C.border; }}
                 >
                   <div style={{ fontSize: 28, marginBottom: 8 }}>{sport.icon}</div>
                   <div style={{ fontSize: 15, fontWeight: 800, color: C.text, marginBottom: 4 }}>{sport.label}</div>
-                  <div style={{ fontSize: 11, color: C.muted, lineHeight: 1.4 }}>
-                    {sport.betTypes.slice(0, 3).join(" · ")}
-                  </div>
-                  <div style={{ position: "absolute", top: 12, right: 12, width: 8, height: 8, borderRadius: "50%", background: sport.color, animation: "shimmer 2s infinite" }} />
+                  <div style={{ fontSize: 10, color: C.muted, lineHeight: 1.5 }}>{sport.betTypes.slice(0, 3).join(" · ")}</div>
+                  <div style={{ position: "absolute", top: 10, right: 10, fontSize: 9, color: sport.color, background: `${sport.color}15`, border: `1px solid ${sport.color}30`, padding: "2px 6px", borderRadius: 8, fontWeight: 700 }}>AI PICKS</div>
                 </div>
               ))}
             </div>
           </>
         )}
 
-        {/* ACCA TAB */}
         {activeTab === "acca" && (
           <div style={{ padding: "52px 0 0" }}>
             <div style={{ padding: "0 16px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{ fontSize: 18, fontWeight: 800, color: C.text }}>🎰 Accumulator</span>
+              <span style={{ fontSize: 18, fontWeight: 800 }}>🎰 Accumulator</span>
               {accumLegs.length > 0 && <span style={{ background: C.goldDim, border: `1px solid ${C.goldBorder}`, color: C.gold, padding: "3px 10px", borderRadius: 20, fontSize: 12, fontWeight: 700 }}>{accumLegs.length} legs</span>}
             </div>
-            <AccumulatorTab legs={accumLegs} onRemove={removeBet} onClear={clearBets} />
+            <AccumulatorTab legs={accumLegs} onRemove={removeBet} onClear={clearBets} onAdd={(leg) => toggleBet(leg)} />
           </div>
         )}
 
-        {/* WC TAB */}
         {activeTab === "wc" && (
           <div style={{ padding: "52px 16px 0" }}>
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 4 }}>🏆 World Cup 2026</div>
+              <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 4 }}>🏆 World Cup 2026</div>
               <div style={{ color: C.muted, fontSize: 12 }}>High-confidence picks for the tournament</div>
             </div>
             <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-              <button onClick={() => setWcMode("win")} style={{ flex: 1, padding: "9px", borderRadius: 10, cursor: "pointer", fontSize: 12, fontWeight: 700, background: wcMode === "win" ? C.greenDim : "#0a1220", border: `1px solid ${wcMode === "win" ? C.greenBorder : C.border}`, color: wcMode === "win" ? C.green : C.muted, transition: "all 0.15s" }}>⚽ Straight Win</button>
-              <button onClick={() => setWcMode("ou")} style={{ flex: 1, padding: "9px", borderRadius: 10, cursor: "pointer", fontSize: 12, fontWeight: 700, background: wcMode === "ou" ? C.aquaDim : "#0a1220", border: `1px solid ${wcMode === "ou" ? C.aquaBorder : C.border}`, color: wcMode === "ou" ? C.aqua : C.muted, transition: "all 0.15s" }}>📈 Over 2.5 Goals</button>
+              <button onClick={() => setWcMode("win")} style={{ flex: 1, padding: "9px", borderRadius: 10, cursor: "pointer", fontSize: 12, fontWeight: 700, background: wcMode === "win" ? C.greenDim : "#0a1220", border: `1px solid ${wcMode === "win" ? C.greenBorder : C.border}`, color: wcMode === "win" ? C.green : C.muted }}>⚽ Straight Win</button>
+              <button onClick={() => setWcMode("ou")} style={{ flex: 1, padding: "9px", borderRadius: 10, cursor: "pointer", fontSize: 12, fontWeight: 700, background: wcMode === "ou" ? C.aquaDim : "#0a1220", border: `1px solid ${wcMode === "ou" ? C.aquaBorder : C.border}`, color: wcMode === "ou" ? C.aqua : C.muted }}>📈 Over 2.5 Goals</button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {WC_PICKS.map(pick => {
-                const selBet = wcMode === "win" ? pick.win_pick : pick.ou_pick;
-                const inAccum = !!accumLegs.find(l => l.id === `wc-${pick.id}`);
-                return <WCCard key={pick.id} pick={pick} betMode={wcMode} onAdd={toggleBet} inAccum={inAccum} />;
+              {WC_PICKS.map((pick, i) => {
+                const isWin = wcMode === "win";
+                const selBet = isWin ? pick.win_pick : pick.ou_pick;
+                const selOdds = isWin ? pick.win_odds : pick.ou_odds;
+                const selConf = isWin ? pick.win_conf : pick.ou_conf;
+                const added = !!accumLegs.find(l => l.id === `wc-${pick.id}`);
+                const color = selConf >= 82 ? C.green : selConf >= 72 ? C.aqua : C.gold;
+                return (
+                  <div key={pick.id} style={{ background: C.card, border: `1px solid ${added ? C.aquaBorder : C.border}`, borderRadius: 14, padding: "12px 14px", borderTop: `2px solid ${C.blue}` }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                      <span style={{ fontSize: 20 }}>{pick.flag_a}</span>
+                      <div>
+                        <div style={{ fontWeight: 800, fontSize: 14 }}>{pick.away} vs {pick.home} <span>{pick.flag_h}</span></div>
+                        <div style={{ color: C.muted, fontSize: 10 }}>{pick.group} · {pick.time}</div>
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+                      <div style={{ flex: 1, padding: "8px 10px", borderRadius: 8, background: isWin ? C.greenDim : "#0a1220", border: `1px solid ${isWin ? C.greenBorder : C.border}` }}>
+                        <div style={{ fontSize: 9, color: C.muted, marginBottom: 2, textTransform: "uppercase" }}>Win</div>
+                        <div style={{ fontWeight: 800, fontSize: 12, color: isWin ? C.green : C.subtle }}>{pick.win_pick}</div>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
+                          <span style={{ fontFamily: "monospace", fontSize: 12, color: C.gold }}>{pick.win_odds}</span>
+                          <ConfBadge value={pick.win_conf} />
+                        </div>
+                      </div>
+                      <div style={{ flex: 1, padding: "8px 10px", borderRadius: 8, background: !isWin ? C.aquaDim : "#0a1220", border: `1px solid ${!isWin ? C.aquaBorder : C.border}` }}>
+                        <div style={{ fontSize: 9, color: C.muted, marginBottom: 2, textTransform: "uppercase" }}>Over 2.5</div>
+                        <div style={{ fontWeight: 800, fontSize: 12, color: !isWin ? C.aqua : C.subtle }}>{pick.ou_pick}</div>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
+                          <span style={{ fontFamily: "monospace", fontSize: 12, color: C.gold }}>{pick.ou_odds}</span>
+                          <ConfBadge value={pick.ou_conf} />
+                        </div>
+                      </div>
+                    </div>
+                    <button onClick={() => toggleBet({ id: `wc-${pick.id}`, match: `${pick.away} vs ${pick.home}`, bet: selBet, odds: parseFloat(selOdds), sport: "⚽", type: "WC 2026", league: pick.group })} style={{ width: "100%", padding: "8px", background: added ? C.redDim : C.aquaDim, border: `1px solid ${added ? C.redBorder : C.aquaBorder}`, color: added ? C.red : C.aqua, borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 700 }}>
+                      {added ? "✕ Remove" : `+ Add ${selBet}`}
+                    </button>
+                  </div>
+                );
               })}
             </div>
           </div>
         )}
 
-        {/* TRACKER TAB */}
         {activeTab === "tracker" && (
           <div style={{ padding: "52px 16px 0" }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: C.text, marginBottom: 16 }}>📊 Bet History</div>
+            <div style={{ fontSize: 18, fontWeight: 800, marginBottom: 16 }}>📊 Bet History</div>
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 14, overflow: "hidden", marginBottom: 12 }}>
               {[
-                { date: "Jun 3", bet: "Yankees ML", sport: "⚾ MLB", result: "W", profit: "+$92", odds: "1.77" },
-                { date: "Jun 2", bet: "Warriors -4.5", sport: "🏀 NBA", result: "W", profit: "+$95", odds: "1.91" },
-                { date: "Jun 1", bet: "Eagles ML", sport: "🏈 NFL", result: "L", profit: "-$100", odds: "2.10" },
-                { date: "Jun 1", bet: "Over 48.5 Runs", sport: "⚾ MLB", result: "W", profit: "+$88", odds: "1.87" },
-                { date: "May 31", bet: "Dodgers Run Line -1.5", sport: "⚾ MLB", result: "W", profit: "+$110", odds: "2.00" },
-                { date: "May 30", bet: "Celtics +3 Spread", sport: "🏀 NBA", result: "W", profit: "+$92", odds: "1.91" },
+                { date: "Jun 3", bet: "Yankees ML", league: "MLB", result: "W", profit: "+$92", odds: "1.77" },
+                { date: "Jun 2", bet: "Warriors -4.5", league: "NBA", result: "W", profit: "+$95", odds: "1.91" },
+                { date: "Jun 1", bet: "Eagles ML", league: "NFL", result: "L", profit: "-$100", odds: "2.10" },
+                { date: "Jun 1", bet: "Over 8.5 Runs", league: "MLB", result: "W", profit: "+$88", odds: "1.87" },
+                { date: "May 31", bet: "Dodgers -1.5", league: "MLB", result: "W", profit: "+$110", odds: "2.00" },
+                { date: "May 30", bet: "Celtics +3", league: "NBA", result: "W", profit: "+$92", odds: "1.91" },
               ].map((b, i, arr) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", padding: "12px 14px", borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : "none" }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontSize: 13, fontWeight: 700, color: C.text }}>{b.bet}</div>
-                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{b.sport} · {b.date} · {b.odds}</div>
+                    <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{b.league} · {b.date} · {b.odds}</div>
                   </div>
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                     <span style={{ padding: "2px 9px", borderRadius: 5, fontSize: 11, fontWeight: 800, background: b.result === "W" ? C.greenDim : C.redDim, color: b.result === "W" ? C.green : C.red, border: `1px solid ${b.result === "W" ? C.greenBorder : C.redBorder}` }}>{b.result}</span>
-                    <span style={{ fontFamily: "monospace", fontSize: 13, fontWeight: 800, color: b.profit.startsWith("+") ? C.green : C.red, minWidth: 52, textAlign: "right" }}>{b.profit}</span>
+                    <span style={{ fontFamily: "monospace", fontSize: 13, fontWeight: 800, color: b.profit.startsWith("+") ? C.green : C.red }}>{b.profit}</span>
                   </div>
                 </div>
               ))}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
               <div style={{ flex: 1, background: C.greenDim, border: `1px solid ${C.greenBorder}`, borderRadius: 12, padding: "12px 14px" }}>
-                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8 }}>Month P&L</div>
+                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Month P&L</div>
                 <div style={{ color: C.green, fontFamily: "monospace", fontWeight: 800, fontSize: 20, marginTop: 3 }}>+$377</div>
               </div>
               <div style={{ flex: 1, background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: "12px 14px" }}>
-                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase", letterSpacing: 0.8 }}>Record</div>
+                <div style={{ color: C.muted, fontSize: 10, textTransform: "uppercase" }}>Record</div>
                 <div style={{ color: C.text, fontFamily: "monospace", fontWeight: 800, fontSize: 20, marginTop: 3 }}>5-1</div>
               </div>
             </div>
@@ -996,12 +951,7 @@ export default function BetSage() {
       {/* Bottom Nav */}
       <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: C.navBg, borderTop: `1px solid ${C.border}`, padding: "10px 8px 26px", display: "flex", justifyContent: "space-around", alignItems: "center", zIndex: 50 }}>
         {tabs.map(t => (
-          <button key={t.id} onClick={() => setActiveTab(t.id)} style={{
-            background: "transparent", border: "none", cursor: "pointer",
-            display: "flex", flexDirection: "column", alignItems: "center", gap: 3,
-            color: activeTab === t.id ? C.aqua : C.muted,
-            transition: "color 0.15s ease", padding: "4px 12px", position: "relative"
-          }}>
+          <button key={t.id} onClick={() => setActiveTab(t.id)} style={{ background: "transparent", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: 3, color: activeTab === t.id ? C.aqua : C.muted, transition: "color 0.15s ease", padding: "4px 12px", position: "relative" }}>
             <span style={{ fontSize: 19 }}>{t.icon}</span>
             <span style={{ fontSize: 10, fontWeight: 600 }}>{t.label}</span>
             {t.id === "acca" && accumLegs.length > 0 && (
@@ -1009,12 +959,7 @@ export default function BetSage() {
             )}
           </button>
         ))}
-        <button onClick={() => setShowChat(true)} style={{
-          background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`,
-          border: "none", borderRadius: 14, width: 52, height: 52,
-          cursor: "pointer", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center",
-          animation: "pulse-aqua 3s infinite", transition: "transform 0.15s ease"
-        }} onMouseEnter={e => e.currentTarget.style.transform = "scale(1.08)"} onMouseLeave={e => e.currentTarget.style.transform = "scale(1)"}>🧠</button>
+        <button onClick={() => setShowChat(true)} style={{ background: `linear-gradient(135deg, ${C.aqua}, ${C.blue})`, border: "none", borderRadius: 14, width: 52, height: 52, cursor: "pointer", fontSize: 22, display: "flex", alignItems: "center", justifyContent: "center", animation: "pulse-aqua 3s infinite", transition: "transform 0.15s ease", boxShadow: `0 0 24px rgba(0,255,229,0.4), 0 0 48px rgba(77,127,255,0.2)` }}>🧠</button>
       </div>
 
       {showChat && <AskSagePanel onClose={() => setShowChat(false)} />}
