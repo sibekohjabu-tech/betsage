@@ -59,13 +59,13 @@ function ValueBadge({ edge }) {
 
 // ─── AI PICKS ENGINE ─────────────────────────────────────────────────────────
 async function fetchAIPicks(sport, betType = "all") {
-  const today = fmtDate();
+  const cacheDate = fmtDate();
   const cacheKey = `sage_picks_${sport}_${betType}_${new Date().toDateString()}`;
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) return JSON.parse(cached);
 
-  const today = new Date();
-  const dateStr = today.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" });
+  const nowDate = new Date();
+  const dateStr = nowDate.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" });
   const prompt = `Today is ${dateStr}. You are Sage, an elite AI sports betting analyst with deep knowledge of current sports.
 
 Generate 8-12 HIGH QUALITY picks for ${sport} betting - focus on "${betType === "all" ? "mixed bet types" : betType}".
@@ -128,8 +128,8 @@ Rules:
 
 // Auto accumulator generator
 async function generateAccumulator(sport, count, betPreference) {
-  const today = fmtDate();
-  const prompt = `Today is ${today}. Generate a ${count}-leg accumulator for ${sport} with preference for "${betPreference}" bets.
+  const accaDate = fmtDate();
+  const prompt = `Today is ${accaDate}. Generate a ${count}-leg accumulator for ${sport} with preference for "${betPreference}" bets.
 
 Search for REAL games today/next 3 days. Pick the ${count} HIGHEST CONFIDENCE legs.
 
