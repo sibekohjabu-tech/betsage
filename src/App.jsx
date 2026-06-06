@@ -64,43 +64,43 @@ async function fetchAIPicks(sport, betType = "all") {
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) return JSON.parse(cached);
 
-  const prompt = `Today is ${today}. You are an elite sports betting analyst with access to current sports data.
+  const today = new Date();
+  const dateStr = today.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" });
+  const prompt = `Today is ${dateStr}. You are Sage, an elite AI sports betting analyst with deep knowledge of current sports.
 
-Generate REAL today's picks for ${sport} - ${betType === "all" ? "all bet types" : betType}.
+Generate 8-12 HIGH QUALITY picks for ${sport} betting - focus on "${betType === "all" ? "mixed bet types" : betType}".
 
-Search for and use ACTUAL games happening TODAY or in the next 3 days for ${sport}.
+Based on your knowledge of current ${sport} seasons, leagues, and typical fixtures for this time of year, generate realistic picks.
 
-Return a JSON array of 8-12 picks. Each pick must be:
-{
-  "id": "unique_id",
+Return ONLY a JSON array, no other text:
+[{
+  "id": "pick_1",
   "sport": "${sport}",
-  "league": "actual league name",
-  "home": "actual team/player name",
-  "away": "actual team/player name",
-  "kickoff": "time and date",
-  "bet": "specific bet recommendation",
+  "league": "specific league name",
+  "home": "home team/player",
+  "away": "away team/player",
+  "kickoff": "Today/Tomorrow HH:MM",
+  "bet": "exact bet e.g. Over 2.5 Goals",
   "betType": "Match Winner|Over/Under|Handicap|Both Teams Score|1st Half|Value Bet|Player Prop",
-  "odds": "decimal odds like 1.75",
-  "confidence": number 60-92,
-  "edge": number (your conf% minus implied prob from odds - can be negative),
-  "isValue": boolean (edge > 5),
-  "reasoning": "2-3 sentence sharp analysis with specific stats, form, and edge",
-  "keyStats": ["stat1", "stat2", "stat3"],
-  "h2h": "brief head to head record",
-  "form": "last 5 games form eg WWDLW",
-  "prediction": "scoreline or result prediction"
-}
+  "odds": "1.75",
+  "confidence": 78,
+  "edge": 8,
+  "isValue": true,
+  "reasoning": "2-3 sharp sentences with specific stats and angles",
+  "keyStats": ["Stat with number 1", "Stat with number 2", "Stat with number 3"],
+  "h2h": "e.g. 3W-1D-1L in last 5",
+  "form": "WWDLW",
+  "prediction": "e.g. 2-1 or Win"
+}]
 
-IMPORTANT: 
-- Use REAL teams/players playing TODAY or next 3 days
-- Include a MIX of bet types: winners, overs, handicaps, value bets, player props where applicable
-- keyStats must be specific numbers (e.g. "Scored in 8/10 home games", "Over 2.5 in 7 last 10")
-- Higher confidence (80%+) only for clear mismatches or strong trending picks
-- Mark isValue:true only when genuine value exists
-- For football include African/SA leagues, European leagues, International games
-- odds must be realistic decimal format
-
-Return ONLY the JSON array, no other text.`;
+Rules:
+- Use REALISTIC current teams/players for ${sport} active this time of year
+- Mix confidence levels 62-90% realistically  
+- Value bets (isValue:true) only where edge > 5%
+- keyStats must have specific numbers
+- odds in decimal format 1.20-5.00
+- For football: include African leagues (SA Premiership, Morocco, Nigeria), European leagues, and international friendlies
+- Return ONLY the JSON array`;
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -109,8 +109,7 @@ Return ONLY the JSON array, no other text.`;
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 4000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        system: "You are Sage, an elite AI sports betting analyst. You have access to web search to find TODAY's actual fixtures and current form data. Always search for real current games before generating picks. Return only valid JSON arrays.",
+        system: "You are Sage, elite AI sports betting analyst. Return only valid JSON arrays. No markdown, no explanation, just the JSON array.",
         messages: [{ role: "user", content: prompt }]
       })
     });
@@ -162,16 +161,21 @@ Only return JSON, no other text.`;
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 2000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        system: "You are Sage, elite sports betting analyst. Search for real current fixtures. Return only valid JSON.",
+        system: "You are Sage, elite sports betting analyst. Generate realistic accumulator picks for today. Return only valid JSON.",
         messages: [{ role: "user", content: prompt }]
       })
     });
     const data = await res.json();
     const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "{}";
-    const clean = text.replace(/```json|```/g, "").trim();
-    const jsonMatch = clean.match(/\{[\s\S]*\}/);
-    return jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+    const clean = text.replace(/```json|```|```javascript/g, "").trim();
+    try {
+      const start = clean.indexOf("{");
+      const end = clean.lastIndexOf("}");
+      if (start !== -1 && end !== -1) {
+        return JSON.parse(clean.substring(start, end + 1));
+      }
+    } catch(e) { return null; }
+    return null;
   } catch (e) { return null; }
 }
 
@@ -653,18 +657,18 @@ function AskSagePanel({ onClose }) {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           model: "claude-sonnet-4-20250514", max_tokens: 1000,
-          tools: [{ type: "web_search_20250305", name: "web_search" }],
-          system: `You are Sage, elite AI sports betting analyst. Today is ${fmtDate()}. 
-You have web search to find REAL current fixtures, form, injuries, and odds.
-Always search for current data before answering. Be sharp, direct, specific.
-Give confidence %, odds, edge analysis. Max 3 paragraphs. No fluff.`,
-          messages: messages.concat([{ role: "user", content: userMsg }]),
+          system: `You are Sage, elite AI sports betting analyst. Today is ${fmtDate()}.
+You have deep knowledge of current sports: football (soccer), rugby, tennis, cricket, basketball, baseball, hockey, darts, MMA.
+You know current leagues, teams, players, form trends, and betting markets.
+Be sharp, direct, specific. Always give: recommended bet, decimal odds estimate, confidence %, key edge factors.
+Max 3 paragraphs. No fluff. When asked for picks, give specific team names and realistic odds.`,
+          messages: [...messages, { role: "user", content: userMsg }],
         })
       });
       const data = await res.json();
       const text = data.content?.filter(b => b.type === "text").map(b => b.text).join("") || "Error.";
       setMessages(prev => [...prev, { role: "assistant", content: text }]);
-    } catch { setMessages(prev => [...prev, { role: "assistant", content: "Connection error." }]); }
+    } catch(e) { setMessages(prev => [...prev, { role: "assistant", content: "Something went wrong — " + (e.message || "please try again.") }]); }
     setLoading(false);
   };
 
