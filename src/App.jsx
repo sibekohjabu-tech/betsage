@@ -20,26 +20,42 @@ const C = {
   text: "#e8f2ff", muted: "#4a6080", subtle: "#7a9ab8", navBg: "#030609",
 };
 
-const SPORTS = [
-  { id: "football", label: "Football", icon: "⚽", color: C.aqua, betTypes: ["Match Winner", "Over/Under Goals", "Both Teams Score", "1st Half Goals", "Asian Handicap", "Double Chance", "Correct Score"] },
-  { id: "rugby", label: "Rugby", icon: "🏉", color: C.aqua, betTypes: ["Match Winner", "Handicap", "Over/Under Points", "1st Half", "Winning Margin", "Try Scorer"] },
-  { id: "tennis", label: "Tennis", icon: "🎾", color: C.gold, betTypes: ["Match Winner", "Set Betting", "Over/Under Games", "1st Set Winner", "Total Sets", "Break of Serve"] },
-  { id: "cricket", label: "Cricket", icon: "🏏", color: C.gold, betTypes: ["Match Winner", "Top Batsman", "Over/Under Runs", "1st Innings Lead", "Player of Match", "Highest Opening Stand"] },
-  { id: "baseball", label: "Baseball", icon: "⚾", color: C.gold, betTypes: ["Match Winner", "Run Line", "Over/Under Runs", "1st 5 Innings", "Player Hits", "Player Strikeouts"] },
-  { id: "basketball", label: "Basketball", icon: "🏀", color: C.blue, betTypes: ["Match Winner", "Point Spread", "Over/Under Points", "1st Quarter", "Player Points", "Player Assists"] },
-  { id: "hockey", label: "Hockey", icon: "🏒", color: C.aqua, betTypes: ["Match Winner", "Puck Line", "Over/Under Goals", "1st Period", "Player Shots", "Both Teams Score"] },
-  { id: "darts", label: "Darts", icon: "🎯", color: C.red, betTypes: ["Match Winner", "Correct Score", "Most 180s", "Highest Checkout", "Winning Margin", "First Leg"] },
-  { id: "mma", label: "MMA/UFC", icon: "🥊", color: C.red, betTypes: ["Fight Winner", "Method of Victory", "Round Betting", "Fight Distance", "Over/Under Rounds", "KO/TKO"] },
-];
+const SPORTS = [const footballRes = await fetch(
+  "https://api.football-data.org/v4/matches",
+  {
+    headers: {
+      "X-Auth-Token": process.env.FOOTBALL_DATA_API_KEY
+    }
+  }
+);
 
-const WC_PICKS = [
-  { id:"wc1", home:"Brazil", away:"Mexico", flag_h:"🇧🇷", flag_a:"🇲🇽", time:"Jun 15 · 3PM", group:"Group D", win_pick:"Brazil Win", win_odds:"1.62", win_conf:81, ou_pick:"Over 2.5 Goals", ou_odds:"1.74", ou_conf:78, reasoning:"Brazil averaging 2.9 goals per game in qualifying. Mexico defence concedes from set pieces." },
-  { id:"wc2", home:"Germany", away:"Japan", flag_h:"🇩🇪", flag_a:"🇯🇵", time:"Jun 16 · 6PM", group:"Group E", win_pick:"Germany Win", win_odds:"1.55", win_conf:84, ou_pick:"Over 2.5 Goals", ou_odds:"1.68", ou_conf:82, reasoning:"Germany high press vs Japan transition. Germany scored 3+ in 6 of last 8." },
-  { id:"wc3", home:"France", away:"Poland", flag_h:"🇫🇷", flag_a:"🇵🇱", time:"Jun 17 · 9PM", group:"Group A", win_pick:"France Win", win_odds:"1.44", win_conf:87, ou_pick:"Over 2.5 Goals", ou_odds:"1.71", ou_conf:76, reasoning:"France depth is elite. Mbappé + Dembélé vs Poland porous backline." },
-  { id:"wc4", home:"Argentina", away:"Saudi Arabia", flag_h:"🇦🇷", flag_a:"🇸🇦", time:"Jun 18 · 3PM", group:"Group C", win_pick:"Argentina Win", win_odds:"1.35", win_conf:89, ou_pick:"Over 2.5 Goals", ou_odds:"1.80", ou_conf:74, reasoning:"Argentina motivated after Qatar scare. Statement game incoming." },
-  { id:"wc5", home:"England", away:"Serbia", flag_h:"🏴󠁧󠁢󠁥󠁮󠁧󠁿", flag_a:"🇷🇸", time:"Jun 16 · 3PM", group:"Group B", win_pick:"England Win", win_odds:"1.50", win_conf:83, ou_pick:"Over 2.5 Goals", ou_odds:"1.78", ou_conf:71, reasoning:"England depth vs Serbia direct style. Kane hungry for big tournament." },
-  { id:"wc6", home:"Spain", away:"Croatia", flag_h:"🇪🇸", flag_a:"🇭🇷", time:"Jun 15 · 6PM", group:"Group F", win_pick:"Spain Win", win_odds:"1.58", win_conf:80, ou_pick:"Over 2.5 Goals", ou_odds:"1.69", ou_conf:79, reasoning:"Spain pressing overwhelms Croatia aging midfield." },
-];
+const footballData = await footballRes.json();
+
+const fixtures = footballData.matches?.slice(0, 10).map(match => ({
+  home: match.homeTeam.name,
+  away: match.awayTeam.name,
+  competition: match.competition.name,
+  kickoff: match.utcDate
+})) || [];
+  
+
+const WC_PICKS = [const prompt = `
+You are BetSage.
+
+Analyze ONLY these real fixtures:
+
+${JSON.stringify(fixtures, null, 2)}
+
+For each fixture provide:
+
+- best bet
+- estimated odds
+- confidence
+- reasoning
+
+Return JSON only.
+`;
+
 
 function fmtDate() {
   return new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
