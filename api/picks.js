@@ -28,5 +28,14 @@ For each fixture provide:
 - confidence
 - reasoning
 
-Return JSON only.
-`;
+Return JSON only
+{
+  "id": "1",
+  "home": "Arsenal",
+  "away": "Chelsea",
+  "league": "Premier League",
+  "bet": "Over 2.5 Goals",
+  "odds": "1.82",
+  "confidence": 78,
+  "reasoning": "..."
+}
