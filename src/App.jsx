@@ -1,30 +1,17 @@
 import { useState, useEffect, useRef } from "react";
 
 // ── DATE ──────────────────────────────────────────────────────────────────────
-import React, { useState } from 'react';
+const TODAY = new Date().toLocaleDateString(
+  "en-GB",
+  {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Africa/Johannesburg"
+  }
+);
 
-function DatePicker() {
-  const [selectedDate, setSelectedDate] = useState('');
-
-  const handleDateChange = (e) => {
-    setSelectedDate(e.target.value);
-  };
-
-  return (
-    <div>
-      <label>Select Date: </label>
-      <input 
-        type="date" 
-        value={selectedDate} 
-        onChange={handleDateChange} 
-        style={{ marginLeft: '10px', padding: '5px' }}
-      />
-      <p>Selected Date: {selectedDate}</p>
-    </div>
-  );
-}
-
-export default DatePicker;
 const WC_DAYS = Official Kick Off Day; // World Cup Jun 11
 
 // ── COLORS ────────────────────────────────────────────────────────────────────
