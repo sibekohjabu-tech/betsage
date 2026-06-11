@@ -1,9 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 
 // ── DATE ──────────────────────────────────────────────────────────────────────
-const TODAY = "Wednesdays 10 Jun 2026";
-const TZ = "UTC+2";
-const WC_DAYS = 2; // World Cup Jun 11
+ const today = new Date();
+const options = { 
+  weekday: 'short', 
+  day: 'numeric', 
+  month: 'short', 
+  year: 'numeric', 
+  timeZone: 'Africa/Johannesburg' // Change this if needed
+};
+const formattedDate = today.toLocaleDateString('en-GB', options);
+
+// Now you can use formattedDate in your app
+console.log(formattedDate); // Example output: "Wed, 11 Jun, 2026"
 
 // ── COLORS ────────────────────────────────────────────────────────────────────
 const G = {
