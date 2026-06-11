@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
 // ── DATE ──────────────────────────────────────────────────────────────────────
-const TODAY = "Thurs 11 Jun 2026";
+const TODAY = "Tue 9 Jun 2026";
 const TZ = "UTC+2";
-const WC_DAYS = 0; // World Cup Jun undrway
+const WC_DAYS = 2; // World Cup Jun 11
 
 // ── COLORS ────────────────────────────────────────────────────────────────────
 const G = {
