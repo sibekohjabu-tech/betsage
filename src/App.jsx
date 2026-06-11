@@ -1,18 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
 // ── DATE ──────────────────────────────────────────────────────────────────────
-const TODAY = new Date().toLocaleDateString(
-  "en-GB",
-  {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "Africa/Johannesburg"
-  }
-);
+const TODAY = "Thurs 11 Jun 2026";
 const TZ = "UTC+2";
-const WC_DAYS = 0; // World Cup 2026 Underway
+const WC_DAYS = 0; // World Cup Jun undrway
 
 // ── COLORS ────────────────────────────────────────────────────────────────────
 const G = {
