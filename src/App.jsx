@@ -26,7 +26,7 @@ const G = {
   wa:"linear-gradient(135deg,#25D366,#128C7E)",
 };
 
-const WC_FIXTURES = [
+const FIXTURES = WC_FIXTURES; [
   { date:"Thu 11 Jun", time:"21:00", home:"Mexico", away:"South Africa", group:"A", venue:"Azteca, Mexico City", h:2.10, d:3.20, a:3.60, pick:"Over 2.5 Goals", pickOdds:1.75, prob:81, tag:"VALUE" },
   { date:"Fri 12 Jun", time:"21:00", home:"Canada", away:"Bosnia & Herz.", group:"B", venue:"BMO Field, Toronto", h:1.95, d:3.30, a:4.20, pick:"Canada Win + BTTS", pickOdds:2.20, prob:77, tag:"VALUE" },
   { date:"Sat 13 Jun", time:"01:00", home:"USA", away:"Paraguay", group:"D", venue:"SoFi Stadium, LA", h:1.75, d:3.40, a:5.00, pick:"USA Win & Over 2.5", pickOdds:2.10, prob:78, tag:"SHARP" },
@@ -478,7 +478,7 @@ function DashPage({user,setPage,startTrial}){
       <div className="page-sub">🏆 World Cup starts <strong style={{color:G.accent}}>TOMORROW Jun 11</strong> · {won}/{TRACKER.filter(b=>b.result!=="pending").length} picks won this week</div>
     </div>
 
-    {/* WC countdown */}
+    {/* FIFA World Cup 2026 Is Underway ⚽*/}
     <div className="wc-banner">
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div>
