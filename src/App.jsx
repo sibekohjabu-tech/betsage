@@ -1,19 +1,30 @@
 import { useState, useEffect, useRef } from "react";
 
 // ── DATE ──────────────────────────────────────────────────────────────────────
- const today = new Date();
-const options = { 
-  weekday: 'short', 
-  day: 'numeric', 
-  month: 'short', 
-  year: 'numeric', 
-  timeZone: 'Africa/Johannesburg' // Change this if needed
-};
-const formattedDate = today.toLocaleDateString('en-GB', options);
+ import React, { useState } from 'react';
 
-// Now you can use formattedDate in your app
-console.log(formattedDate); // Example output: "Wed, 11 Jun, 2026"
+function DatePicker() {
+  const [selectedDate, setSelectedDate] = useState('');
 
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
+  return (
+    <div>
+      <label>Select Date: </label>
+      <input 
+        type="date" 
+        value={selectedDate} 
+        onChange={handleDateChange} 
+        style={{ marginLeft: '10px', padding: '5px' }}
+      />
+      <p>Selected Date: {selectedDate}</p>
+    </div>
+  );
+}
+
+export default DatePicker;
 // ── COLORS ────────────────────────────────────────────────────────────────────
 const G = {
   bg:"#060812", card:"#0A1020", card2:"#0E1830",
