@@ -11,6 +11,31 @@ const WC_START_DATE = new Date('2026-06-11'); // World Cup start date
 const WC_DAYS = Math.ceil((WC_START_DATE - new Date()) / (1000 * 60 * 60 * 24));
 const TZ = 'UTC+2';
 
+function DateStrip({dates, onSelectDate, selectedDate}) {
+  return (
+    <div style={{display: 'flex', overflowX: 'auto', gap: '12px', padding: '10px 16px', background: '#070E1A', borderRadius: '12px'}}>
+      {dates.map((date) => (
+        <button
+          key={date}
+          onClick={() => onSelectDate(date)}
+          style={{
+            padding: '8px 16px',
+            borderRadius: '20px',
+            border: date === selectedDate ? '2px solid #00E5FF' : '2px solid transparent',
+            background: date === selectedDate ? '#00E5FF22' : 'transparent',
+            color: date === selectedDate ? '#00E5FF' : '#D8E8F8',
+            fontWeight: date === selectedDate ? 700 : 400,
+            cursor: 'pointer'
+          }}
+        >
+          {date}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export default DateStrip;
 // ── TOKENS ────────────────────────────────────────────────────────────
 const G = {
   bg: "#05080F",
