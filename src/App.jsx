@@ -92,7 +92,19 @@ export default function App() {
     </div>
   </div>
 )}
-      {page === "soccer" && <h3>Soccer Page</h3>}
+      {page === "soccer" && (
+  <div style={{ padding: 20 }}>
+    <h2>⚽ Soccer Hub</h2>
+
+    <ul>
+      <li>Over 2.5 Goals</li>
+      <li>First Half Over 0.5</li>
+      <li>Handicap Bets</li>
+      <li>Corners Markets</li>
+      <li>Correct Score Predictions</li>
+    </ul>
+  </div>
+)}
       {page === "worldcup" && <h3>World Cup Page</h3>}
       {page === "acca" && <h3>Acca Page</h3>}
 
