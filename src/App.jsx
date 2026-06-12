@@ -42,7 +42,56 @@ export default function App() {
 
       <hr />
 
-      {page === "dashboard" && <h3>Dashboard Page</h3>}
+      {page === "dashboard" && (
+  <div style={{ padding: 20 }}>
+    <h2>📊 BetSage Dashboard</h2>
+
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))",
+        gap: 12,
+        marginTop: 20,
+      }}
+    >
+      <div style={{
+        padding: 15,
+        border: "1px solid #ddd",
+        borderRadius: 10
+      }}>
+        <h4>Win Rate</h4>
+        <p>--%</p>
+      </div>
+
+      <div style={{
+        padding: 15,
+        border: "1px solid #ddd",
+        borderRadius: 10
+      }}>
+        <h4>Today's Picks</h4>
+        <p>0</p>
+      </div>
+
+      <div style={{
+        padding: 15,
+        border: "1px solid #ddd",
+        borderRadius: 10
+      }}>
+        <h4>Active Accas</h4>
+        <p>0</p>
+      </div>
+
+      <div style={{
+        padding: 15,
+        border: "1px solid #ddd",
+        borderRadius: 10
+      }}>
+        <h4>ROI</h4>
+        <p>--</p>
+      </div>
+    </div>
+  </div>
+)}
       {page === "soccer" && <h3>Soccer Page</h3>}
       {page === "worldcup" && <h3>World Cup Page</h3>}
       {page === "acca" && <h3>Acca Page</h3>}
