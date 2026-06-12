@@ -56,18 +56,17 @@ const G = {
   wa: "linear-gradient(135deg,#25D366,#128C7E)",
 };
 
+ function DashPage() {
+  return (
     <div style={{ padding: '16px', background: G.card, color: G.text }}>
       <div style={{ fontSize: '14px', color: G.dim }}>
         {TODAY} · {TZ} · {WC_DAYS} Days to WC
       </div>
-      {/* Calendar strip or date navigation here */}
-      
-// ── COMPONENTS FOR OTHER PAGES ──────────────────────────────────────
+
       <p>Welcome to BetSage AI.</p>
     </div>
   );
-}
-
+    }
 function SoccerPage() {
   return (
     <div style={{ color: G.text, padding: 20 }}>
