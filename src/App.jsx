@@ -67,10 +67,6 @@ const G = {
 // ── COMPONENTS FOR OTHER PAGES ──────────────────────────────────────
 // Your other components like DashPage, SoccerPage, etc., would follow here.
 
-export default function App() {
-  const [page, setPage] = useState('dashboard');
-  // ... (rest of your app logic)
-
   return (
     <>
       <DateStrip />
