@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-// ── DATE CONSTANTS ───────────────────────────────────────────────────
+// ── DATE CONSTANTS ─────────────────────────────
 const TODAY = new Date().toLocaleDateString('en-GB', {
   weekday: 'short',
   day: 'numeric',
@@ -11,9 +11,9 @@ const WC_START_DATE = new Date('2026-06-11'); // World Cup start date
 const WC_DAYS = Math.ceil((WC_START_DATE - new Date()) / (1000 * 60 * 60 * 24));
 const TZ = 'UTC+2';
 
-function DateStrip({dates, onSelectDate, selectedDate}) {
+function DateStrip({ dates, onSelectDate, selectedDate }) {
   return (
-    <div style={{display: 'flex', overflowX: 'auto', gap: '12px', padding: '10px 16px', background: '#070E1A', borderRadius: '12px'}}>
+    <div style={{ display: 'flex', overflowX: 'auto', gap: '12px', padding: '10px 16px', background: '#070E1A', borderRadius: '12px' }}>
       {dates.map((date) => (
         <button
           key={date}
@@ -25,7 +25,7 @@ function DateStrip({dates, onSelectDate, selectedDate}) {
             background: date === selectedDate ? '#00E5FF22' : 'transparent',
             color: date === selectedDate ? '#00E5FF' : '#D8E8F8',
             fontWeight: date === selectedDate ? 700 : 400,
-            cursor: 'pointer'
+            cursor: 'pointer',
           }}
         >
           {date}
@@ -36,6 +36,7 @@ function DateStrip({dates, onSelectDate, selectedDate}) {
 }
 
 export default DateStrip;
+``
 // ── TOKENS ────────────────────────────────────────────────────────────
 const G = {
   bg: "#05080F",
