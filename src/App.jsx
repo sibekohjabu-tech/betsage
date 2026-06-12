@@ -3,20 +3,66 @@ import { useState, useRef } from "react";
 // ── DATE ──────────────────────────────────────────────────────────────────────
 import { useState } from 'react';
 
-function DateStrip() {
-  const [selectedDate, setSelectedDate] = useState(null);
+// ── DATE CONSTANTS ───────────────────────────────────────────────────
+const TODAY = new Date().toLocaleDateString('en-GB', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+const WC_START_DATE = new Date('2026-06-11'); // World Cup start date
+const WC_DAYS = Math.ceil((WC_START_DATE - new Date()) / (1000 * 60 * 60 * 24));
+const TZ = 'UTC+2';
 
-  // Generate a range of dates (e.g., today ± 7 days)
-  const today = new Date();
-  const dateArray = [];
-  for (let i = -3; i <= 3; i++) {
-    const date = new Date();
-    date.setDate(today.getDate() + i);
-    dateArray.push(date);
-  }
+// ── TOKENS ────────────────────────────────────────────────────────────
+const G = {
+  bg: "#05080F",
+  card: "#0B1422",
+  card2: "#0F1B2E",
+  border: "#182840",
+  accent: "#00E5FF",
+  green: "#00FF88",
+  gold: "#FFD166",
+  red: "#FF4560",
+  purple: "#C084FC",
+  orange: "#FB923C",
+  muted: "#2A4060",
+  text: "#D8E8F8",
+  dim: "#5A7A9A",
+  grad: "linear-gradient(135deg,#00E5FF,#00FF88)",
+  gradGold: "linear-gradient(135deg,#FFD166,#FB923C)",
+  gradGreen: "linear-gradient(135deg,#00FF88,#00CC6A)",
+  wa: "linear-gradient(135deg,#25D366,#128C7E)",
+};
+
+// ── COMPONENT: DATE STRIP ────────────────────────────────────────────
+function DateStrip() {
+  // You can add state for selected date, etc.
+  return (
+    <div style={{ padding: '16px', background: G.card, color: G.text }}>
+      <div style={{ fontSize: '14px', color: G.dim }}>
+        {TODAY} · {TZ} · {WC_DAYS} Days to WC
+      </div>
+      {/* Calendar strip or date navigation here */}
+      {/* Example: Add date buttons or a scrollable date list */}
+    </div>
+  );
+}
+
+// ── COMPONENTS FOR OTHER PAGES ──────────────────────────────────────
+// Your other components like DashPage, SoccerPage, etc., would follow here.
+
+export default function App() {
+  const [page, setPage] = useState('dashboard');
+  // ... (rest of your app logic)
 
   return (
-    <div style={{ display: 'flex', overflowX: 'auto', gap:
+    <>
+      <DateStrip />
+      {/* The rest of your layout, navbar, and page components */}
+    </>
+  );
+}
 
 // ── TOKENS ────────────────────────────────────────────────────────────────────
 const G = {
