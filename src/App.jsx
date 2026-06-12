@@ -131,4 +131,4 @@ export default function App() {
       {page === "worldcup" && <h3>World Cup Page</h3>}
       {page === "acca" && <h3>Acca Page</h3>}
 
-    </div
+  </div>
