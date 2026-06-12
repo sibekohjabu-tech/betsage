@@ -63,11 +63,7 @@ const G = {
         {TODAY} · {TZ} · {WC_DAYS} Days to WC
       </div>
       {/* Calendar strip or date navigation here */}
-      {/* Example: Add date buttons or a scrollable date list */}
-    </div>
-  );
-}
-
+      
 // ── COMPONENTS FOR OTHER PAGES ──────────────────────────────────────
 // Your other components like DashPage, SoccerPage, etc., would follow here.
 
