@@ -75,6 +75,28 @@ const G = {
   );
 }
 
+     // ── TOKENS ────────────────────────────────────────────────────
+const G = {
+  bg: "#05080F",
+  card: "#0B1422",
+  card2: "#0F1B2E",
+  border: "#182840",
+  accent: "#00E5FF",
+  green: "#00FF88",
+  gold: "#FFD166",
+  red: "#FF4560",
+  purple: "#C084FC",
+  orange: "#FB923C",
+  muted: "#2A4060",
+  text: "#D8E8F8",
+  dim: "#5A7A9A",
+  grad: "linear-gradient(135deg, #00E5FF, #00FF88)",
+  gradGold: "linear-gradient(135deg, #FFD166, #FB923C)",
+  gradGreen: "linear-gradient(135deg, #00FF88, #00CC6A)",
+  wa: "linear-gradient(135deg, #25D366, #128C7E)",
+};
+
+// ── DATA ─ 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const PLANS = [
   { id:"starter", name:"Starter", price:29, priceId:"price_starter", color:G.accent, badge:null,
