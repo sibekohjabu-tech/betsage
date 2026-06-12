@@ -2,7 +2,11 @@ import { useState } from "react";
 
 export default function App() {
   const [user, setUser] = useState(() => {
-    return JSON.parse(localStorage.getItem("betsage_user"));
+    try {
+      return JSON.parse(localStorage.getItem("betsage_user"));
+    } catch {
+      return null;
+    }
   });
 
   const [page, setPage] = useState("dashboard");
@@ -29,7 +33,6 @@ export default function App() {
 
       <h2>⚡ BetSage AI</h2>
 
-      {/* NAVBAR */}
       <div style={{ display: "flex", gap: 10 }}>
         <button onClick={() => setPage("dashboard")}>🏠</button>
         <button onClick={() => setPage("soccer")}>⚽</button>
@@ -39,48 +42,6 @@ export default function App() {
 
       <hr />
 
-      import { useState } from "react";
-
-export default function App() {
-  const [user, setUser] = useState(() => {
-    return JSON.parse(localStorage.getItem("betsage_user"));
-  });
-
-  const [page, setPage] = useState("dashboard");
-
-  if (!user) {
-    return (
-      <div style={{ padding: 20 }}>
-        <h2>Login</h2>
-        <button
-          onClick={() => {
-            const u = { email: "test@betsage.ai" };
-            localStorage.setItem("betsage_user", JSON.stringify(u));
-            setUser(u);
-          }}
-        >
-          Login
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ padding: 20 }}>
-
-      <h2>⚡ BetSage AI</h2>
-
-      {/* NAVBAR */}
-      <div style={{ display: "flex", gap: 10 }}>
-        <button onClick={() => setPage("dashboard")}>🏠</button>
-        <button onClick={() => setPage("soccer")}>⚽</button>
-        <button onClick={() => setPage("worldcup")}>🏆</button>
-        <button onClick={() => setPage("acca")}>🎰</button>
-      </div>
-
-      <hr />
-
-      {/* PAGES */}
       {page === "dashboard" && <h3>Dashboard Page</h3>}
       {page === "soccer" && <h3>Soccer Page</h3>}
       {page === "worldcup" && <h3>World Cup Page</h3>}
@@ -88,5 +49,4 @@ export default function App() {
 
     </div>
   );
-    
-
+}
