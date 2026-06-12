@@ -63,11 +63,6 @@ const G = {
       {/* Calendar strip or date navigation here */}
       
 // ── COMPONENTS FOR OTHER PAGES ──────────────────────────────────────
-
-function DashPage() {
-  return (
-    <div style={{ color: G.text, padding: 20 }}>
-      <h2>Dashboard</h2>
       <p>Welcome to BetSage AI.</p>
     </div>
   );
