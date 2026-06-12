@@ -58,10 +58,6 @@ const G = {
   wa: "linear-gradient(135deg,#25D366,#128C7E)",
 };
 
-// ── COMPONENT: DATE STRIP ────────────────────────────────────────────
-function DateStrip() {
-  // You can add state for selected date, etc.
-  return (
     <div style={{ padding: '16px', background: G.card, color: G.text }}>
       <div style={{ fontSize: '14px', color: G.dim }}>
         {TODAY} · {TZ} · {WC_DAYS} Days to WC
