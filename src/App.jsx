@@ -1,56 +1,50 @@
 import { useState } from "react";
 
-import Dashboard from "./pages/Dashboard";
-import Soccer from "./pages/Soccer";
-import WorldCup from "./pages/WorldCup";
-import Acca from "./pages/Acca";
-
-import Navbar from "./components/Navbar";
-import AuthModal from "./components/AuthModal";
-
 export default function App() {
   const [user, setUser] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("betsage_user"));
-    } catch {
-      return null;
-    }
+    return JSON.parse(localStorage.getItem("betsage_user"));
   });
 
   const [page, setPage] = useState("dashboard");
 
-  const [showAuth, setShowAuth] = useState(false);
-
-  function logout() {
-    localStorage.removeItem("betsage_user");
-    setUser(null);
-    setShowAuth(true);
-  }
-
-  if (!user && !showAuth) {
+  if (!user) {
     return (
-      <AuthModal
-        onSuccess={(u) => {
-          setUser(u);
-          localStorage.setItem("betsage_user", JSON.stringify(u));
-        }}
-      />
+      <div style={{ padding: 20 }}>
+        <h2>Login</h2>
+        <button
+          onClick={() => {
+            const u = { email: "test@betsage.ai" };
+            localStorage.setItem("betsage_user", JSON.stringify(u));
+            setUser(u);
+          }}
+        >
+          Login
+        </button>
+      </div>
     );
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0b1220", color: "#fff" }}>
-      <Navbar
-        user={user}
-        page={page}
-        setPage={setPage}
-        logout={logout}
-      />
+    <div style={{ padding: 20 }}>
 
-      {page === "dashboard" && <Dashboard />}
-      {page === "soccer" && <Soccer />}
-      {page === "worldcup" && <WorldCup />}
-      {page === "acca" && <Acca />}
+      <h2>⚡ BetSage AI</h2>
+
+      {/* NAVBAR */}
+      <div style={{ display: "flex", gap: 10 }}>
+        <button onClick={() => setPage("dashboard")}>🏠</button>
+        <button onClick={() => setPage("soccer")}>⚽</button>
+        <button onClick={() => setPage("worldcup")}>🏆</button>
+        <button onClick={() => setPage("acca")}>🎰</button>
+      </div>
+
+      <hr />
+
+      {/* PAGES */}
+      {page === "dashboard" && <h3>Dashboard Page</h3>}
+      {page === "soccer" && <h3>Soccer Page</h3>}
+      {page === "worldcup" && <h3>World Cup Page</h3>}
+      {page === "acca" && <h3>Acca Page</h3>}
+
     </div>
   );
 }
