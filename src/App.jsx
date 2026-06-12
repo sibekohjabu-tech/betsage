@@ -12,7 +12,7 @@ const WC_DAYS = Math.ceil((WC_START_DATE - new Date()) / (1000 * 60 * 60 * 24));
 const TZ = 'UTC+2';
 
 // ── TOKENS ────────────────────────────────────────────────────────────
-const = {
+const G = {
   bg: "#05080F",
   card: "#0B1422",
   card2: "#0F1B2E",
