@@ -1,9 +1,22 @@
 import { useState, useRef } from "react";
 
 // ── DATE ──────────────────────────────────────────────────────────────────────
-const TODAY = "Fri 12 June 2026";
-const TZ = "UTC+2";
-const WC_DAYS = 11;
+import { useState } from 'react';
+
+function DateStrip() {
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  // Generate a range of dates (e.g., today ± 7 days)
+  const today = new Date();
+  const dateArray = [];
+  for (let i = -3; i <= 3; i++) {
+    const date = new Date();
+    date.setDate(today.getDate() + i);
+    dateArray.push(date);
+  }
+
+  return (
+    <div style={{ display: 'flex', overflowX: 'auto', gap:
 
 // ── TOKENS ────────────────────────────────────────────────────────────────────
 const G = {
