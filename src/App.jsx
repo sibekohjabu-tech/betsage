@@ -35,8 +35,6 @@ function DateStrip({ dates, onSelectDate, selectedDate }) {
   );
 }
 
-export default DateStrip;
-``
 // ── TOKENS ────────────────────────────────────────────────────────────
 const G = {
   bg: "#05080F",
@@ -65,16 +63,64 @@ const G = {
       {/* Calendar strip or date navigation here */}
       
 // ── COMPONENTS FOR OTHER PAGES ──────────────────────────────────────
-// Your other components like DashPage, SoccerPage, etc., would follow here.
 
+function DashPage() {
   return (
-    <>
-      <DateStrip />
-      {/* The rest of your layout, navbar, and page components */}
-    </>
+    <div style={{ color: G.text, padding: 20 }}>
+      <h2>Dashboard</h2>
+      <p>Welcome to BetSage AI.</p>
+    </div>
   );
 }
 
+function SoccerPage() {
+  return (
+    <div style={{ color: G.text, padding: 20 }}>
+      <h2>Soccer Hub</h2>
+      <p>Soccer predictions and fixtures.</p>
+    </div>
+  );
+}
+
+function WorldCupPage() {
+  return (
+    <div style={{ color: G.text, padding: 20 }}>
+      <h2>World Cup 2026</h2>
+      <p>World Cup fixtures and AI picks.</p>
+    </div>
+  );
+}
+
+function AccumulatorPage() {
+  return (
+    <div style={{ color: G.text, padding: 20 }}>
+      <h2>AI Accumulator</h2>
+      <p>Daily accumulator suggestions.</p>
+    </div>
+  );
+}
+
+function PlansPage() {
+  return (
+    <div style={{ color: G.text, padding: 20 }}>
+      <h2>Subscription Plans</h2>
+      <p>Choose a plan to continue.</p>
+    </div>
+  );
+}
+export default function App() {
+  const [page, setPage] = useState("dashboard");
+
+  return (
+    <div style={{ background: G.bg, minHeight: "100vh" }}>
+      {page === "dashboard" && <DashPage />}
+      {page === "soccer" && <SoccerPage />}
+      {page === "worldcup" && <WorldCupPage />}
+      {page === "accumulator" && <AccumulatorPage />}
+      {page === "plans" && <PlansPage />}
+    </div>
+  );
+}
      // ── TOKENS ────────────────────────────────────────────────────
 const G = {
   bg: "#05080F",
