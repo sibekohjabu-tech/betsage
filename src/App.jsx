@@ -92,43 +92,46 @@ export default function App() {
     </div>
   </div>
 )}
-      {<div style={{ padding: 20 }}>
-  <h2>⚽ Soccer Hub</h2>
+      {page === "soccer" && (
+  <div style={{ padding: 20 }}>
+    <h2>⚽ Soccer Hub</h2>
 
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-      gap: 12,
-      marginTop: 20,
-    }}
-  >
-    <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
-      <h3>🔥 Over 2.5 Goals</h3>
-      <p>Find high-probability goal matches.</p>
+    <div
+      style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+        gap: 12,
+        marginTop: 20,
+      }}
+    >
+      <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
+        <h3>🔥 Over 2.5 Goals</h3>
+        <p>Find high-probability goal matches.</p>
+      </div>
+
+      <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
+        <h3>⚡ First Half Over 0.5</h3>
+        <p>Matches likely to have an early goal.</p>
+      </div>
+
+      <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
+        <h3>📈 Handicap Bets</h3>
+        <p>Home, away and underdog handicap selections.</p>
+      </div>
+
+      <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
+        <h3>🚩 Corners Markets</h3>
+        <p>Over 4.5, 8.5 and team corners opportunities.</p>
+      </div>
+
+      <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
+        <h3>🎯 Correct Score</h3>
+        <p>AI-generated scoreline predictions.</p>
+      </div>
     </div>
-
-    <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
-      <h3>⚡ First Half Over 0.5</h3>
-      <p>Matches likely to have an early goal.</p>
-    </div>
-
-    <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
-      <h3>📈 Handicap Bets</h3>
-      <p>Home, away and underdog handicap selections.</p>
-    </div>
-
-    <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
-      <h3>🚩 Corners Markets</h3>
-      <p>Over 4.5, 8.5 and team corners opportunities.</p>
-    </div>
-
-    <div style={{ padding: 15, border: "1px solid #ddd", borderRadius: 10 }}>
-      <h3>🎯 Correct Score</h3>
-      <p>AI-generated scoreline predictions.</p>
-    </div>
-  )}
-      {page === "worldcup" && <h3>World Cup Page</h3>}
-      {page === "acca" && <h3>Acca Page</h3>}
-
   </div>
+)}
+
+{page === "worldcup" && <h3>World Cup Page</h3>}
+
+{page === "acca" && <h3>Acca Page</h3>}
