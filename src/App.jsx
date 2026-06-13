@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from 'react';
 
-// ─── CURRENT DATE: Friday 12 June 2026 · UTC+2 ────────────────────────────────
-const TODAY       = "Fri 12 Jun 2026";
-const TODAY_SHORT = "Fri 12 Jun";
-const TZ          = "UTC+2";
+function DateStrip({dates, onSelectDate, selectedDate}) {
+  return (
+    <div style={{display: 'flex', overflowX: 'auto', gap: '12px', padding: '10px 16px', background: '#070E1A', borderRadius:";
 
 // ── COLORS ────────────────────────────────────────────────────────────────────
 const G = {
